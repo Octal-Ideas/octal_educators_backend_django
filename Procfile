@@ -1,1 +1,1 @@
-web: gunicorn <octaleducatorsbackend>.wsgi
+web: gunicorn octaleducatorsbackend.wsgi
