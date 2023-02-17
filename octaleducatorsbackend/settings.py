@@ -12,15 +12,25 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+import os
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l-!rtk8&5vw5i-e=^08xfir#dy65o491#3^q40zcrx%u9#mp)n'
+# SECRET_KEY = 'django-insecure-l-!rtk8&5vw5i-e=^08xfir#dy65o491#3^q40zcrx%u9#mp)n'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -28,7 +38,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 CORS_ALLOWED_ORIGINS =[
-    'http;//localhost:4000'
+    'http://localhost:4000'
 ]
 
 
@@ -85,11 +95,11 @@ WSGI_APPLICATION = 'octaleducatorsbackend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': BASE_DIR / 'db.postgres',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'AeFD3ZGSmAktdkOszqnl',
+        'HOST': 'containers-us-west-179.railway.app',
+        'PORT': '6881',
     }
 }
 
