@@ -26,16 +26,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # load_dotenv(os.path.join(BASE_DIR, ".env"))
 
-config = cloudinary.config(secure=True)
+# config = cloudinary.config(secure=True)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l-!rtk8&5vw5i-e=^08xfir#dy65o491#3^q40zcrx%u9#mp)n'
+# SECRET_KEY = 'django-insecure-l-!rtk8&5vw5i-e=^08xfir#dy65o491#3^q40zcrx%u9#mp)n'
 # SECRET_KEY = os.getenv("SECRET_KEY")
-# SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -108,7 +108,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'railway',
         'USER': 'postgres',
-        'PASSWORD': 'AeFD3ZGSmAktdkOszqnl',
+        'PASSWORD': config('DB_PASSWORD'),
         'HOST': 'containers-us-west-179.railway.app',
         'PORT': '6881',
     }
@@ -162,5 +162,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 cloudinary.config(
     cloud_name=config('cloud_name'),
     api_key=config('api_key'),
-    api_secret=config('api_secret')
+    api_secret=config('api_secret'),
 )
