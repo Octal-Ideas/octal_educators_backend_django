@@ -33,7 +33,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-l-!rtk8&5vw5i-e=^08xfir#dy65o491#3^q40zcrx%u9#mp)n'
 # SECRET_KEY = os.getenv("SECRET_KEY")
 SECRET_KEY = config('SECRET_KEY')
 
@@ -109,8 +108,8 @@ DATABASES = {
         'NAME': 'railway',
         'USER': 'postgres',
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': 'containers-us-west-179.railway.app',
-        'PORT': '6881',
+        'HOST': 'containers-us-west-155.railway.app',
+        'PORT': '5731',
     }
 }
 
