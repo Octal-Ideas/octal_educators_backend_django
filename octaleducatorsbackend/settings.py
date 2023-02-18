@@ -43,7 +43,9 @@ CORS_ALLOWED_ORIGINS =[
     'http://localhost:8080',
     'https://octaleducatorsbackenddjango-production.up.railway.app'
 ]
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://octaleducatorsbackenddjango-production.up.railway.app/*'
+]
 
 # Application definition
 
