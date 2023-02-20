@@ -22,8 +22,9 @@ class BlogViewSet(
                 category_id=category_id).select_related('category')
 
         return queryset
-
-
+    def perform_create(self, serializer):
+        serializer.save(created_by =self.request.user)
+    
 class CategoryViewSet(GenericViewSet, ListModelMixin,):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
