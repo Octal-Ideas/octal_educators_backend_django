@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 
 import os
+# import sys
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
@@ -127,6 +128,9 @@ DATABASES = {
         'PORT': '5731',
     }
 }
+
+# if 'test' in sys.argv:
+#     DATABASES['default'] = {'ENGINE': 'django.db.backends.sqlite3'}
 
 
 # Password validation
