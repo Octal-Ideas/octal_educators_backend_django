@@ -1,4 +1,4 @@
-from rest_framework.decorators import action, api_view
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet
@@ -44,8 +44,7 @@ class ViewCountViewSet(GenericViewSet):
         obj, _ = ViewCount.objects.get_or_create(blog_post_id=blog_post_id)
         return obj
 
-    @action(detail=True, methods=['post'])
-    @api_view(['POST'])
+    @action(detail=True, methods=['post'],name='increment_viewers')
     def increment_viewers(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.increment_viewers()
