@@ -19,7 +19,7 @@ class Tag(models.Model):
     
      # The maximum number of tags allowed is 5
     def save(self, *args, **kwargs):
-        if Tag.objects.count() >= 5:
+        if Tag.objects.count() > 5:
             raise Exception("Maximum number of tags reached")
         super().save(*args, **kwargs)
 
@@ -34,8 +34,8 @@ class Blog(models.Model):
     slug = models.SlugField(default='-')
     modified_at = models.DateField(auto_now=True)
     created_by = models.ForeignKey(User, related_name="blog", on_delete= models.CASCADE, default=3)
-    created_at= models.DateField(auto_now_add=True)
-    published_date = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    created_at= models.DateTimeField(auto_now_add=True)
+    published_date = models.DateTimeField(null=True, blank=True, default=None)
     duration = models.DurationField(null=True, blank=True)
     tags = models.ManyToManyField(Tag)
     category = models.ForeignKey(
@@ -85,11 +85,11 @@ def handle_max_tags_reached(sender, **kwargs):
         raise Exception("Maximum number of tags reached")
 
 # Error handler for invalid blog post slug
-def handle_invalid_slug(sender, instance, **kwargs):
-    instance.slug = instance.title.replace(' ', '-')
-    instance.save()
+# def handle_invalid_slug(sender, instance, **kwargs):
+#     instance.slug = instance.title.replace(' ', '-')
+#     instance.save()
 
 
 # Register error handlers
-models.signals.pre_save.connect(handle_invalid_slug, sender=Blog)
+# models.signals.pre_save.connect(handle_invalid_slug, sender=Blog)
 models.signals.pre_save.connect(handle_max_tags_reached, sender=Tag)
