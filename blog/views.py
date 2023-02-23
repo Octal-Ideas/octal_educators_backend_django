@@ -4,7 +4,13 @@ from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 from .serializers import BlogSerializer, CategorySerializer, CommentSerializer, ViewCountSerializer
 from .models import Blog, Category, Comment, ViewCount
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
+class ReadOnlyOrAuthenticated(BasePermission):
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.is_authenticated
 # Create your views here.
 
 
@@ -13,7 +19,8 @@ class BlogViewSet(
 ):
 
     serializer_class = BlogSerializer
-
+    permission_classes = [ReadOnlyOrAuthenticated]
+     
     def get_queryset(self):
         queryset = Blog.objects.select_related('category').all()
         category_id = self.request.query_params.get('category_id')
