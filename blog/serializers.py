@@ -19,7 +19,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'content',  'author')
-        read_only_fields =('date_posted','modified_at')
+        read_only_fields =('date_posted','modified_at', 'pub_date')
         
 class BlogSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
@@ -30,7 +30,7 @@ class BlogSerializer(serializers.ModelSerializer):
         model = Blog
         fields = ('id', 'title', 'thumbnail', 'description',
                   'slug', 'category', 'tags', 'comments')
-        read_only_fields = ('created_by', 'created_at', 'modified_at','published_date', 'duration')
+        read_only_fields = ('created_by', 'created_at', 'modified_at','pub_date')
         
 class ViewCountSerializer(serializers.ModelSerializer):
     blog_post = serializers.SlugRelatedField(slug_field='slug', queryset=Blog.objects.all())
