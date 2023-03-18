@@ -1,6 +1,6 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
+from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin
 from rest_framework.viewsets import GenericViewSet
 from .serializers import BlogSerializer, CategorySerializer, CommentSerializer, ViewCountSerializer
 from .models import Blog, Category, Comment, ViewCount
@@ -15,7 +15,7 @@ class ReadOnlyOrAuthenticated(BasePermission):
 
 
 class BlogViewSet(
-    GenericViewSet, ListModelMixin, RetrieveModelMixin
+    GenericViewSet, ListModelMixin, RetrieveModelMixin, CreateModelMixin
 ):
 
     serializer_class = BlogSerializer
