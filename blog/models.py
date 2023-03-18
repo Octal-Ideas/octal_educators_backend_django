@@ -1,10 +1,13 @@
 from django.contrib.auth.models import User
+import math
 from django.db import models
 from django.utils import timezone
 from cloudinary.models import CloudinaryField
 
+
     
 # Create your models here.
+
 
 # A model representing a blog post category
 class Category(models.Model):
@@ -28,32 +31,53 @@ class Tag(models.Model):
 
 # A model representing a blog post
 class Blog(models.Model):
-    title = models.CharField(max_length=255)
-    thumbnail = CloudinaryField('image')
+    LANGUAGES = [
+        ('en', 'English'),
+        ('fr', 'French'),
+        ('es', 'Spanish'),
+        ('de', 'German'),
+        ('it', 'Italian'),
+    ]
+    title = models.CharField(max_length=255, blank= False,)
+    thumbnail = CloudinaryField('image',upload_preset='octalideas')
     description = models.TextField()
     slug = models.SlugField(default='-')
     modified_at = models.DateField(auto_now=True)
-    created_by = models.ForeignKey(User, related_name="blog", on_delete= models.CASCADE, default=3)
+    created_by = models.ForeignKey(User, related_name="blog", on_delete= models.CASCADE)
     created_at= models.DateTimeField(auto_now_add=True)
-    pub_date = models.DateTimeField(auto_now_add= True)
     tags = models.ManyToManyField(Tag)
     category = models.ForeignKey(
         Category, on_delete=models.PROTECT, related_name='blogs')
+    language = models.CharField(max_length=2, choices=LANGUAGES, default='en')
+    photographer = models.CharField(max_length=255, blank=True)
+    caption = models.CharField(max_length=255, blank=True)
 
+    def clean(self):
+        if not self.pk:
+            # Make sure the language exists
+            lang_codes = [lang[0] for lang in self.LANGUAGES]
+            if self.language not in lang_codes:
+                raise ValidationError(f"{self.language} is not a valid language code.")
+        
+        # Make sure the caption is short
+        if len(self.caption) > 100:
+            raise ValidationError("The caption must be less than 100 characters long.")
+        
+        
     # Returns the time since the blog was published
     def whenpublished(self):
         now = timezone.now()
         
-        diff= now - self.pub_date
+        diff= now - self.created_at
 
         if diff.days == 0 and diff.seconds >= 0 and diff.seconds < 60:
             seconds= diff.seconds
             
             if seconds == 1:
-                return str(seconds) +  "second ago"
+                return "Just now"
             
             else:
-                return str(seconds) + " seconds ago"
+                return "Just now"
 
             
 
@@ -106,20 +130,7 @@ class Blog(models.Model):
 
             else:
                 return str(years) + " years ago"
-    
-    # @property
-    # def time_since_published(self):
-    #     if self.published_date is None:
-    #         return None
-    #     return timezone.now() - self.published_date
 
-    # Publishes the blog and calculates the duration since creation
-    # def publish(self):
-    #     self.published_date = timezone.now()
-    #     self.duration = self.published_date - self.created_at
-    #     self.save()
-    # def __str__(self) -> str:
-    #     return self.title
     
 # A model representing a comment on a blog post
 class Comment(models.Model):
@@ -149,12 +160,5 @@ def handle_max_tags_reached(sender, **kwargs):
     if sender.objects.count() > 5:
         raise Exception("Maximum number of tags reached")
 
-# Error handler for invalid blog post slug
-# def handle_invalid_slug(sender, instance, **kwargs):
-#     instance.slug = instance.title.replace(' ', '-')
-#     instance.save()
 
-
-# Register error handlers
-# models.signals.pre_save.connect(handle_invalid_slug, sender=Blog)
 models.signals.pre_save.connect(handle_max_tags_reached, sender=Tag)
