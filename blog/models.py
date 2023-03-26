@@ -3,9 +3,12 @@ import math
 from django.db import models
 from django.utils import timezone
 from cloudinary.models import CloudinaryField
+from rest_framework.exceptions import ValidationError
+from django.utils.text import slugify
+from django.db.models.signals import pre_save
+from django.shortcuts import reverse
+from taggit.managers import TaggableManager
 
-
-    
 # Create your models here.
 
 
@@ -16,18 +19,6 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.title
     
-# A model representing a blog post tag
-class Tag(models.Model):
-    name = models.CharField(max_length=100)
-    
-     # The maximum number of tags allowed is 5
-    def save(self, *args, **kwargs):
-        if Tag.objects.count() > 5:
-            raise Exception("Maximum number of tags reached")
-        super().save(*args, **kwargs)
-
-    def __str__(self) -> str:
-        return self.name
 
 # A model representing a blog post
 class Blog(models.Model):
@@ -41,16 +32,28 @@ class Blog(models.Model):
     title = models.CharField(max_length=255, blank= False,)
     thumbnail = CloudinaryField('image',upload_preset='octalideas')
     description = models.TextField()
-    slug = models.SlugField(default='-')
+    slug = models.SlugField()
     modified_at = models.DateField(auto_now=True)
     created_by = models.ForeignKey(User, related_name="blog", on_delete= models.CASCADE)
     created_at= models.DateTimeField(auto_now_add=True)
-    tags = models.ManyToManyField(Tag)
+    tags = TaggableManager()
     category = models.ForeignKey(
         Category, on_delete=models.PROTECT, related_name='blogs')
     language = models.CharField(max_length=2, choices=LANGUAGES, default='en')
     photographer = models.CharField(max_length=255, blank=True)
     caption = models.CharField(max_length=255, blank=True)
+    
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["-created_at", "-modified_at"]
+
+    def get_api_url(self):
+        try:
+            return reverse("blogs_api:blog_detail", kwargs={"slug": self.slug})
+        except:
+            None
 
     def clean(self):
         if not self.pk:
@@ -63,6 +66,12 @@ class Blog(models.Model):
         if len(self.caption) > 100:
             raise ValidationError("The caption must be less than 100 characters long.")
         
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+
+        super(Blog, self).save(*args, **kwargs)
+
         
     # Returns the time since the blog was published
     def whenpublished(self):
@@ -130,8 +139,20 @@ class Blog(models.Model):
 
             else:
                 return str(years) + " years ago"
-
+    @property
+    def comments(self):
+        instance = self
+        qs = Comment.objects.filter(post=instance)
+        return qs
     
+def pre_save_post_receiver(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = create_slug(instance)
+
+
+pre_save.connect(pre_save_post_receiver, sender=Blog)
+
+
 # A model representing a comment on a blog post
 class Comment(models.Model):
     content = models.TextField()
@@ -142,7 +163,9 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.author}\'s comment on {self.post}'
-    
+    class Meta:
+        ordering = ["-date_posted", "-modified_at"]
+        
 class ViewCount(models.Model):
     blog_post = models.ForeignKey(Blog, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=0)
@@ -155,10 +178,13 @@ class ViewCount(models.Model):
     def __str__(self):
         return f'{self.blog_post.title} - {self.count} viewers'
     
-# Error handler for maximum number of tags reached
-def handle_max_tags_reached(sender, **kwargs):
-    if sender.objects.count() > 5:
-        raise Exception("Maximum number of tags reached")
-
-
-models.signals.pre_save.connect(handle_max_tags_reached, sender=Tag)
+def create_slug(instance, new_slug=None):
+    slug = slugify(instance.title)
+    if new_slug is not None:
+        slug = new_slug
+    qs = Blog.objects.filter(slug=slug).order_by("-id")
+    exists = qs.exists()
+    if exists:
+        new_slug = "%s-%s" % (slug, qs.first().id)
+        return create_slug(instance, new_slug=new_slug)
+    return slug
