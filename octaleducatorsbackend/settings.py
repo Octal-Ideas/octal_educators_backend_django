@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'djoser',
     'taggit',
     'blog.apps.BlogConfig',
+    'theme',
 ]
 
 MIDDLEWARE = [
