@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-
+from datetime import timedelta
 import os
 # import sys
 import cloudinary
@@ -60,30 +60,40 @@ REST_FRAMEWORK = {
     )
 }
 
-JWT_AUTH = {
-    'JWT_VERIFY_EXPIRATION': True,
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
-}
+
 
 # Application definition
 
-INSTALLED_APPS = [
+# Installed Apps
+
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whitenoise.runserver_nostatic',
+]
+PROJECT_APPS = [
+    'blog.apps.BlogConfig',
+    'account',
+    'theme',]
+
+THIRD_PARTY_APPS = [
+     'whitenoise.runserver_nostatic',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
     'djoser',
     'taggit',
-    'blog.apps.BlogConfig',
-    'theme',
+    'phonenumber_field',
+    'allauth',
+    'allauth.socialaccount',
+    'rest_auth',
+    'rest_auth.registration',
 ]
+
+INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -146,6 +156,8 @@ if os.environ.get('ENV') == 'production':
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
+AUTH_USER_MODEL = 'account.User'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -192,3 +204,32 @@ cloudinary.config(
     api_key=config('api_key'),
     api_secret=config('api_secret'),
 )
+
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ("JWT",),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+}
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email_username_phone'
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'api.serializers.RegisterSerializer'
+}
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'api.serializers.UserSerializer'
+}

@@ -1,5 +1,5 @@
 # Import required modules
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 import math
 from django.db import models
 from django.utils import timezone
@@ -9,6 +9,7 @@ from django.utils.text import slugify
 from django.db.models.signals import pre_save
 from django.shortcuts import reverse
 from taggit.managers import TaggableManager
+from django.conf import settings
 
 # Create your models here.
 
@@ -37,7 +38,7 @@ class Blog(models.Model):
     description = models.TextField()
     slug = models.SlugField()
     modified_at = models.DateField(auto_now=True)
-    created_by = models.ForeignKey(User, related_name="blog", on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="blog", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager()
     category = models.ForeignKey(
@@ -170,7 +171,7 @@ class Comment(models.Model):
     # Field for creating a foreign key relationship with the Blog model
     post = models.ForeignKey(Blog, on_delete=models.CASCADE)
     # Field for creating a foreign key relationship with the User model
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         # Returns the string representation of the comment object
