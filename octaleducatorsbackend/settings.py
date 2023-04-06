@@ -147,8 +147,8 @@ if os.environ.get('ENV') == 'production':
             'NAME': 'railway',
             'USER': 'postgres',
             'PASSWORD': config('DB_PASSWORD'),
-            'HOST': 'containers-us-west-142.railway.app',
-            'PORT': '6728',
+            'HOST': 'containers-us-west-121.railway.app',
+            'PORT': '5764',
         }
     }
 
