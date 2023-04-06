@@ -1,21 +1,23 @@
+# Import required packages
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from phonenumber_field.modelfields import PhoneNumberField
 
+# Custom user manager
 class UserManager(BaseUserManager):
     
+    # Method to create a regular user
     def create_user(self, email, phone_number, first_name, last_name, username=None, password=None, **extra_fields):
+        # Check if user email is provided
         if not email:
             raise ValueError('Users must have an email address')
         
+        # Normalize user email
         email = self.normalize_email(email)
 
         # Generate username
-        
-        # first_name = extra_fields.get('first_name', '')
-        # last_name = extra_fields.get('last_name', '')
-        
         if not username or self.model.objects.filter(username=username).exists():
+            # If first name and last name is given, create a username
             if first_name and last_name:
                 username = f"{first_name[0].upper()}{last_name.lower()}"
 
@@ -33,8 +35,8 @@ class UserManager(BaseUserManager):
                             username = f"{first_name[:2].upper()}{last_name.lower()}{i}"
                         else:
                             username = f"{first_name[0].upper()}{last_name.lower()}{i}"
+            # If first name and last name is not given, fall back to email address
             else:
-                # Fall back to email address
                 username = email.split('@')[0]
                 
                 # Check if username already exists
@@ -51,16 +53,20 @@ class UserManager(BaseUserManager):
                             username = f"{username}{i}"
                         else:
                             username = f"{username}{i}"
+        
+        # Create and save the user
         user = self.model(email=email, username=username, phone_number=phone_number, first_name=first_name, last_name=last_name, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
     
+    # Method to create a superuser
     def create_superuser(self, email, phone_number, first_name, last_name, username, password=None, **extra_fields):
         extra_fields.setdefault('is_admin', True)
         # extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password=password,phone_number=phone_number, first_name=first_name, last_name=last_name, username=username, **extra_fields)
 
+# User model
 class User(AbstractBaseUser, PermissionsMixin):
     ROLES = (
         ('admin', 'Admin'),
