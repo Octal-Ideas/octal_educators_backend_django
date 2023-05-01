@@ -1,20 +1,24 @@
 # Import required modules
 # from django.contrib.auth.models import User
+import uuid
 import math
+
+from django.conf import settings
 from django.db import models
+from django.db.models.signals import pre_save
 from django.utils import timezone
+from django.utils.text import slugify
+from django.shortcuts import reverse
+
 from cloudinary.models import CloudinaryField
 from rest_framework.exceptions import ValidationError
-from django.utils.text import slugify
-from django.db.models.signals import pre_save
-from django.shortcuts import reverse
 from taggit.managers import TaggableManager
-from django.conf import settings
-
 # Create your models here.
 
 # Model representing a blog post category
 class Category(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     title = models.CharField(max_length=255)
 
     def __str__(self) -> str:
@@ -32,13 +36,14 @@ class Blog(models.Model):
         ('it', 'Italian'),
     ]
     
-    # Fields for the blog post model
+    # Fields for the blog post model  
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255, blank=False)
     thumbnail = CloudinaryField('image',upload_preset='octalideas')
     description = models.TextField()
     slug = models.SlugField()
     modified_at = models.DateField(auto_now=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="blog", on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="blogs", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager()
     category = models.ForeignKey(
@@ -162,6 +167,7 @@ pre_save.connect(pre_save_post_receiver, sender=Blog)
 # A model representing a comment on a blog post
 # Defining a Comment model
 class Comment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # Field for storing the content of the comment
     content = models.TextField()
     # Field for storing the last modified date
@@ -171,7 +177,7 @@ class Comment(models.Model):
     # Field for creating a foreign key relationship with the Blog model
     post = models.ForeignKey(Blog, on_delete=models.CASCADE)
     # Field for creating a foreign key relationship with the User model
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
 
     def __str__(self):
         # Returns the string representation of the comment object
@@ -187,6 +193,8 @@ class ViewCount(models.Model):
     blog_post = models.ForeignKey(Blog, on_delete=models.CASCADE)
     # Field for storing the number of viewers
     count = models.PositiveIntegerField(default=0)
+    # Field for creating a foreign key relationship with the User model
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='views')
     
     # A method to increment the number of viewers for the post
     def increment_viewers(self):
@@ -196,6 +204,11 @@ class ViewCount(models.Model):
     def __str__(self):
         # Returns the string representation of the ViewCount object
         return f'{self.blog_post.title} - {self.count} viewers'
+    
+class Like(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='likes', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     
 # Function to create a slug for a Blog post
 def create_slug(instance, new_slug=None):
