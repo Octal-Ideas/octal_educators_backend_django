@@ -153,8 +153,8 @@ DATABASES = {
         'NAME': 'railway',
         'USER': 'postgres',
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': 'containers-us-west-121.railway.app',
-        'PORT': '5764',
+        'HOST': 'containers-us-west-171.railway.app',
+        'PORT': '6543',
     }
 }
 
