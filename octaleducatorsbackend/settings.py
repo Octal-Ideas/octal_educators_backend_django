@@ -40,11 +40,10 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['localhost', "127.0.0.1"]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
-    'http://localhost:4000',
     'https://octaleducatorsbackenddjango-production.up.railway.app'
 ]
 CSRF_TRUSTED_ORIGINS = [
@@ -154,8 +153,8 @@ DATABASES = {
         'NAME': 'railway',
         'USER': 'postgres',
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': 'containers-us-west-121.railway.app',
-        'PORT': '5764',
+        'HOST': 'containers-us-west-171.railway.app',
+        'PORT': '6543',
     }
 }
 

@@ -1,7 +1,10 @@
 # Import required packages
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from phonenumber_field.modelfields import PhoneNumberField
+from cloudinary.models import CloudinaryField
 
 # Custom user manager
 class UserManager(BaseUserManager):
@@ -75,6 +78,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('student', 'Student'),
         ('blogger', 'Blogger'),
     )
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    avatar = CloudinaryField('image',upload_preset='octalideas', blank=True, null=True)
     role = models.CharField(max_length=10, choices=ROLES, default='blogger')
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=200, unique=True,blank=True, null=True)
@@ -86,12 +91,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ["first_name","last_name","phone_number","username","role"]
+    REQUIRED_FIELDS = ["id","first_name","last_name","phone_number","username","role", "avatar"]
 
     objects = UserManager()
 
     def __str__(self):
-        return self.email    
+        return self.email 
     
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'

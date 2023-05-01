@@ -1,13 +1,18 @@
-from rest_framework.decorators import action
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin
 from rest_framework.viewsets import GenericViewSet
-from .serializers import BlogSerializer, CategorySerializer, CommentSerializer, ViewCountSerializer
-from .models import Blog, Category, Comment, ViewCount
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from django.shortcuts import render, redirect, get_object_or_404
-from .pagination import PostLimitOffsetPagination
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+
 from taggit.models import Tag
+
+from .serializers import BlogSerializer, CategorySerializer, CommentSerializer, ViewCountSerializer
+from .models import Blog, Category, Comment, ViewCount, Like
+from .pagination import PostLimitOffsetPagination
 
 class ReadOnlyOrAuthenticated(BasePermission):
     # Custom permission class that allows read access to anyone, but only allows
@@ -57,6 +62,14 @@ class BlogViewSet(
             'blogs':blogs,
         }
         return render(request, 'blog/tagged.html', context)
+    
+class BlogDetailView(RetrieveUpdateDestroyAPIView):
+    """
+    A view that returns a single Blog object.
+    """
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    permission_classes = [ReadOnlyOrAuthenticated]
 
 # Viewset for the Category model
 class CategoryViewSet(GenericViewSet, ListModelMixin):
@@ -98,3 +111,19 @@ class ViewCountViewSet(GenericViewSet):
         instance.increment_viewers()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+    
+@api_view(['POST'])
+def post_like(request, pk):
+    post = Blog.objects.get(pk=pk)
+
+    if not post.likes.filter(created_by=request.user):
+        like = Like.objects.create(created_by=request.user)
+
+        post = Blog.objects.get(pk=pk)
+        post.likes_count = post.likes_count + 1
+        post.likes.add(like)
+        post.save()
+
+        return JsonResponse({'message': 'like created'})
+    else:
+        return JsonResponse({'message': 'post already liked'})
