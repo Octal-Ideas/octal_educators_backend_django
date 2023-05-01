@@ -1,11 +1,12 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
 
 from taggit.models import Tag
 
@@ -61,6 +62,14 @@ class BlogViewSet(
             'blogs':blogs,
         }
         return render(request, 'blog/tagged.html', context)
+    
+class BlogDetailView(RetrieveUpdateDestroyAPIView):
+    """
+    A view that returns a single Blog object.
+    """
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    permission_classes = [ReadOnlyOrAuthenticated]
 
 # Viewset for the Category model
 class CategoryViewSet(GenericViewSet, ListModelMixin):
