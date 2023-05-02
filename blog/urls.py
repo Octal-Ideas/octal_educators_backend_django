@@ -6,9 +6,9 @@ from . import views
 # Create a router and register viewsets
 router = DefaultRouter()
 router.register('blogs', views.BlogViewSet, basename='blogs'),
-router.register('categories', views.CategoryViewSet, basename='categories')
-router.register('comments', views.CommentViewSet, basename='comments')
-router.register('view-counts', views.ViewCountViewSet, basename='view-counts')
+router.register('comments', views.CommentViewSet, basename='comments'),
+router.register('categories', views.CategoryViewSet, basename='categories'),
+router.register('view-counts', views.ViewCountViewSet, basename='view-counts'),
 
 # Define urlpatterns
 urlpatterns = [

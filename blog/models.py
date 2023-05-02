@@ -12,8 +12,12 @@ from django.shortcuts import reverse
 
 from cloudinary.models import CloudinaryField
 from rest_framework.exceptions import ValidationError
-from taggit.managers import TaggableManager
 # Create your models here.
+
+class Like(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='likes', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 # Model representing a blog post category
 class Category(models.Model):
@@ -45,12 +49,13 @@ class Blog(models.Model):
     modified_at = models.DateField(auto_now=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="blogs", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    tags = TaggableManager()
     category = models.ForeignKey(
         Category, on_delete=models.PROTECT, related_name='blogs')
     language = models.CharField(max_length=2, choices=LANGUAGES, default='en')
     photographer = models.CharField(max_length=255, blank=True)
     caption = models.CharField(max_length=255, blank=True)
+    likes = models.ManyToManyField(Like, blank=True)
+    likes_count = models.IntegerField(default=0)
     
     def __str__(self):
         return self.title
@@ -205,10 +210,7 @@ class ViewCount(models.Model):
         # Returns the string representation of the ViewCount object
         return f'{self.blog_post.title} - {self.count} viewers'
     
-class Like(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='likes', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+
     
 # Function to create a slug for a Blog post
 def create_slug(instance, new_slug=None):

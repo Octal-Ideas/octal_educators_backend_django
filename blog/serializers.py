@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Blog, Category, Comment, ViewCount
-from taggit.serializers import (TagListSerializerField, TaggitSerializer)
 
 # Serializer for the Comment model
 class CommentSerializer(serializers.ModelSerializer):
@@ -10,17 +9,16 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields =('date_posted','modified_at', 'pub_date')
 
 # Serializer for the Blog model
-class BlogSerializer(TaggitSerializer, serializers.ModelSerializer):
+class BlogSerializer( serializers.ModelSerializer):
     # Serializes the comments for the Blog
     comments = CommentSerializer(many=True, read_only=True)
     # Serializer method to get the time since the blog was published
     time_since_published = serializers.SerializerMethodField()
-    tags = TagListSerializerField()
     class Meta:
         model = Blog
         # Fields to serialize
         fields = ('id', 'title', 'thumbnail', 'description',
-                  'slug', 'category', 'tags', 'comments', "language", "photographer", "caption", "time_since_published",)
+                  'slug', 'category',  'comments', "language", "photographer", "caption", "time_since_published",'likes_count',)
         # Fields that are read-only
         read_only_fields = ('created_by', 'created_at', 'modified_at')
         
