@@ -1,14 +1,14 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+# from django.core import serializers
+
 
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin
+from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
-
-from taggit.models import Tag
 
 from .serializers import BlogSerializer, CategorySerializer, CommentSerializer, ViewCountSerializer
 from .models import Blog, Category, Comment, ViewCount, Like
@@ -24,7 +24,7 @@ class ReadOnlyOrAuthenticated(BasePermission):
 
 # Viewset for the Blog model
 class BlogViewSet(
-    GenericViewSet, ListModelMixin, RetrieveModelMixin, CreateModelMixin
+    GenericViewSet, ListModelMixin, RetrieveModelMixin, CreateModelMixin,UpdateModelMixin,
 ):
     # Sets the serializer class and permission class to be used by this viewset
     serializer_class = BlogSerializer
@@ -51,25 +51,7 @@ class BlogViewSet(
         else:
             return Response({"errors": serializer.errors}, status=400)
         
-    @action(detail=True, methods=['get'])
-    def tagged(self, request, pk=None):
-        # Filters Blog objects by the given tag name
-        tag = get_object_or_404(Tag, slug=pk)
-        blogs = Blog.objects.filter(tags=tag)
-        # Returns a rendered template with the filtered Blog objects
-        context = {
-            'tag':tag,
-            'blogs':blogs,
-        }
-        return render(request, 'blog/tagged.html', context)
     
-class BlogDetailView(RetrieveUpdateDestroyAPIView):
-    """
-    A view that returns a single Blog object.
-    """
-    queryset = Blog.objects.all()
-    serializer_class = BlogSerializer
-    permission_classes = [ReadOnlyOrAuthenticated]
 
 # Viewset for the Category model
 class CategoryViewSet(GenericViewSet, ListModelMixin):
