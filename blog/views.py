@@ -61,7 +61,7 @@ class CategoryViewSet(GenericViewSet, ListModelMixin):
     permission_classes = [ReadOnlyOrAuthenticated]
 
 # Viewset for the Comment model
-class CommentViewSet(GenericViewSet):
+class CommentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin, CreateModelMixin,UpdateModelMixin,):
     # Sets the queryset, serializer class, and permission class to be used by this viewset
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -76,17 +76,19 @@ class CommentViewSet(GenericViewSet):
         else:
             return Response({"errors": serializer.errors}, status=400)
 
-# Viewset for the ViewCount model
+# # Viewset to handle view count operations for blog posts
 class ViewCountViewSet(GenericViewSet):
     # Sets the queryset and serializer class to be used by this viewset
     queryset = ViewCount.objects.all()
     serializer_class = ViewCountSerializer
 
+    # Gets the ViewCount object for the specified blog post, creating a new object if one does not exist
     def get_object(self):
         blog_post_id = self.kwargs['blog_post_id']
         obj, _ = ViewCount.objects.get_or_create(blog_post_id=blog_post_id)
         return obj
 
+    # Action to increment the view count for the specified blog post
     @action(detail=True, methods=['post'],name='increment_viewers')
     def increment_viewers(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -94,13 +96,16 @@ class ViewCountViewSet(GenericViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
     
+ # Function-based view to handle creating likes for blog posts   
 @api_view(['POST'])
 def post_like(request, pk):
     post = Blog.objects.get(pk=pk)
 
+    # Check if user has already liked the post
     if not post.likes.filter(created_by=request.user):
         like = Like.objects.create(created_by=request.user)
 
+        # Increment likes count for blog post and add new like object
         post = Blog.objects.get(pk=pk)
         post.likes_count = post.likes_count + 1
         post.likes.add(like)
@@ -109,3 +114,21 @@ def post_like(request, pk):
         return JsonResponse({'message': 'like created'})
     else:
         return JsonResponse({'message': 'post already liked'})
+    
+    
+#TODO class based likes
+# class PostLikeView(APIView):
+#     def post(self, request, pk):
+#         post = Blog.objects.get(pk=pk)
+
+#         if not post.likes.filter(created_by=request.user):
+#             like = Like.objects.create(created_by=request.user)
+
+#             post = Blog.objects.get(pk=pk)
+#             post.likes_count = post.likes_count + 1
+#             post.likes.add(like)
+#             post.save()
+
+#             return JsonResponse({'message': 'like created'})
+#         else:
+#             return JsonResponse({'message': 'post already liked'})

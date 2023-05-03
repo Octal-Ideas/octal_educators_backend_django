@@ -80,7 +80,9 @@ DJANGO_APPS = [
 PROJECT_APPS = [
     'blog.apps.BlogConfig',
     'account',
-    'theme',]
+    'theme',
+    'search',
+    ]
 
 THIRD_PARTY_APPS = [
      'whitenoise.runserver_nostatic',
