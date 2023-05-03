@@ -33,5 +33,5 @@ urlpatterns = [
     path('api/v1/', include('theme.urls')),
     
     
-    path('swagger/', schema_view),
+    path('', schema_view),
 ]
