@@ -8,12 +8,13 @@ from rest_framework.response import Response
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from rest_framework.generics import RetrieveUpdateDestroyAPIView
+# from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.throttling import UserRateThrottle
 
 from .serializers import BlogSerializer, CategorySerializer, CommentSerializer, ViewCountSerializer
 from .models import Blog, Category, Comment, ViewCount, Like
 from .pagination import PostLimitOffsetPagination
-
+from .throttles import BlogRateThrottle
 class ReadOnlyOrAuthenticated(BasePermission):
     # Custom permission class that allows read access to anyone, but only allows
     # authenticated users to modify the data
@@ -30,23 +31,26 @@ class BlogViewSet(
     serializer_class = BlogSerializer
     permission_classes = [ReadOnlyOrAuthenticated]
     pagination_class = PostLimitOffsetPagination
+    throttle_classes = [UserRateThrottle, BlogRateThrottle]
      
     def get_queryset(self):
         # Returns all Blog objects and filters based on the category_id query parameter if it exists
         queryset = Blog.objects.select_related('category').all()
         category_id = self.request.query_params.get('category_id')
-
+        print("get all blogs by category")
+    
         if category_id is not None:
             queryset = queryset.filter(
                 category_id=category_id)
-
         return queryset
 
     def perform_create(self, serializer):
         # When a new Blog object is created, sets the created_by field to the current user
+        print("create owner of the blog")
         if serializer.is_valid(raise_exception=True):         
             serializer.validated_data['created_by'] = self.request.user
             serializer.save()
+            print("created owner of the blog")
             return Response(serializer.data, status=200)
         else:
             return Response({"errors": serializer.errors}, status=400)
