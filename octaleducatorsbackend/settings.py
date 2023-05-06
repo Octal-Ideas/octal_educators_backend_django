@@ -59,7 +59,19 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'blog.throttles.BlogRateThrottle',
+        'account.throttles.AccountsRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '500/day',
+        'blog': '100/day',
+        'accounts': '50/day'
+    }
 }
 
 
@@ -99,6 +111,9 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework_swagger',
+    #Adding a richtext editor
+    'ckeditor',
+    'ckeditor_uploader', 
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
@@ -205,6 +220,13 @@ STATIC_URL = '/static/'
 STATICFILES_DIR = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+
+#storages
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -277,3 +299,30 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api.serializers.UserSerializer'
 }
+
+# CKEDITOR configurations
+
+CKEDITOR_UPLOAD_PATH = '/uploads'
+
+CKEDITOR_CONFIGS = {
+    'default' : {
+           'extraPlugins': ','.join([
+            'uploadimage',
+            'codesnippet',
+            'autolink',
+            'autoembed',
+            'embedsemantic',
+            'scayt',
+            'widget',
+            'lineutils',
+            'clipboard',
+            'dialog',
+            'dialogui',
+            'elementspath'
+        ]),
+        'toolbar' : 'full',
+        'height': '700',
+    }, 
+    
+}
+
