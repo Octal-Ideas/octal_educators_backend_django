@@ -51,8 +51,8 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema',
-    
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
@@ -75,7 +75,6 @@ REST_FRAMEWORK = {
 }
 
 
-
 # Application definition
 
 # Installed Apps
@@ -87,17 +86,17 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
 ]
 PROJECT_APPS = [
     'blog.apps.BlogConfig',
     'account',
     'theme',
     'search',
-    ]
+]
 
 THIRD_PARTY_APPS = [
-     'whitenoise.runserver_nostatic',
+    'whitenoise.runserver_nostatic',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
@@ -111,9 +110,9 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework_swagger',
-    #Adding a richtext editor
+    # Adding a richtext editor
     'ckeditor',
-    'ckeditor_uploader', 
+    'ckeditor_uploader',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
@@ -144,8 +143,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'libraries' : {
-                'staticfiles': 'django.templatetags.static', 
+            'libraries': {
+                'staticfiles': 'django.templatetags.static',
             }
         },
     },
@@ -221,11 +220,11 @@ STATICFILES_DIR = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
-#storages
+# storages
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -305,8 +304,8 @@ REST_AUTH_SERIALIZERS = {
 CKEDITOR_UPLOAD_PATH = '/uploads'
 
 CKEDITOR_CONFIGS = {
-    'default' : {
-           'extraPlugins': ','.join([
+    'default': {
+        'extraPlugins': ','.join([
             'uploadimage',
             'codesnippet',
             'autolink',
@@ -320,9 +319,8 @@ CKEDITOR_CONFIGS = {
             'dialogui',
             'elementspath'
         ]),
-        'toolbar' : 'full',
+        'toolbar': 'full',
         'height': '700',
-    }, 
-    
-}
+    },
 
+}

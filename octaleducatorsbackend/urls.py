@@ -31,18 +31,17 @@ urlpatterns = [
 
     path('api/v1/', include('djoser.urls')),
     path('api/v1/', include('djoser.urls.authtoken')),
-    
+
 
 
     path('api/v1/', include('account.urls')),
     path('api/v1/', include('blog.urls')),
     path('api/v1/', include('theme.urls')),
-    
-    
+
+
     path('', schema_view),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-] + static(settings.MEDIA_URL,
-           document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = "Octal Ideas Admin"
 admin.site.site_title = "Octal Ideas Admin Portal"
