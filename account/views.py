@@ -7,7 +7,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.throttling import UserRateThrottle 
 
+from .throttles import AccountsRateThrottle
 from .models import User
 from .serializers import UserSerializer
 
@@ -18,6 +20,7 @@ from .serializers import UserSerializer
 class UserList(APIView):
     # Specifying permission classes
     permission_classes = [IsAdminUser | AllowAny]
+    throttle_classes = [UserRateThrottle, AccountsRateThrottle]
 
     def get(self, request):
         # Checking if the user is an admin
@@ -34,12 +37,16 @@ class UserList(APIView):
 
 # Customizing the token serializer to add custom claims
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    
+    throttle_classes = [UserRateThrottle, AccountsRateThrottle]
+    
     @classmethod
     def get_token(cls, user):
         # Generating token using the parent class method
         token = super().get_token(user)
 
         # Adding custom claims
+        token["email"] = user.email,
         token['username'] = user.username
         # ...
 
@@ -48,5 +55,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 # Customizing the token view to use the custom serializer
 class MyTokenObtainPairView(TokenObtainPairView):
+    throttle_classes = [UserRateThrottle, AccountsRateThrottle]
     serializer_class = MyTokenObtainPairSerializer
     
