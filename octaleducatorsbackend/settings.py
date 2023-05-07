@@ -63,14 +63,17 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
-        'blog.throttles.BlogRateThrottle',
         'account.throttles.AccountsRateThrottle'
+        'blog.throttles.BlogRateThrottle',
+        'course.throttles.CourseRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/day',
         'user': '500/day',
+        'accounts': '50/day',
         'blog': '100/day',
-        'accounts': '50/day'
+        'course': '100/day',
+
     }
 }
 
@@ -93,6 +96,7 @@ PROJECT_APPS = [
     'account',
     'theme',
     'search',
+    'course',
 ]
 
 THIRD_PARTY_APPS = [
