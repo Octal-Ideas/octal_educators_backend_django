@@ -70,7 +70,7 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/day',
         'user': '500/day',
-        'accounts': '50/day',
+        'account': '50/day',
         'blog': '100/day',
         'course': '100/day',
 
