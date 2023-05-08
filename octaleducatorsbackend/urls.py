@@ -37,6 +37,7 @@ urlpatterns = [
     path('api/v1/', include('account.urls')),
     path('api/v1/', include('blog.urls')),
     path('api/v1/', include('theme.urls')),
+    path('api/v1/', include('course.urls')),
 
 
     path('', schema_view),
