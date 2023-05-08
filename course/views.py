@@ -1,51 +1,49 @@
-from django.shortcuts import render
+from django.contrib.auth.mixins import UserPassesTestMixin
 
-# Create your views here.
-from rest_framework import generics, permissions
-from rest_framework.throttling import UserRateThrottle
+from rest_framework import viewsets, permissions, throttling
 
 from .models import Course, Department, Teacher, Lecture
 from .serializers import CourseSerializer, DepartmentSerializer, TeacherSerializer, LectureSerializer
 from .pagination import CourseLimitOffsetPagination
 from .throttles import CourseRateThrottle
-class DepartmentList(generics.ListCreateAPIView):
+
+
+class DepartmentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
 
-class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Department.objects.all()
-    serializer_class = DepartmentSerializer
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
-class TeacherList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Teacher.objects.all()
-    serializer_class = TeacherSerializer
 
-class TeacherDetail(generics.RetrieveUpdateDestroyAPIView):
+class TeacherViewSet(viewsets.ModelViewSet, UserPassesTestMixin):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
 
-class LectureList(generics.ListCreateAPIView):
+    def test_func(self):
+        return self.request.user.groups.filter(name='teacher').exists()
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+
+class LectureViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Lecture.objects.all()
     serializer_class = LectureSerializer
 
-class LectureDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Lecture.objects.all()
-    serializer_class = LectureSerializer
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
-class CourseList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer 
-    pagination_class = CourseLimitOffsetPagination
-    throttle_classes = [UserRateThrottle, CourseRateThrottle]
 
-class CourseDetail(generics.RetrieveUpdateDestroyAPIView):
+class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    pagination_class = CourseLimitOffsetPagination
+    throttle_classes = [throttling.UserRateThrottle, CourseRateThrottle]
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
