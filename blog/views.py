@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-# from django.core import serializers
+
 
 
 from rest_framework.decorators import action, api_view
