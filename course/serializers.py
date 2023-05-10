@@ -26,7 +26,8 @@ class LectureSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     department = DepartmentSerializer()
     teacher = TeacherSerializer()
-    lectures = LectureSerializer(many=True)
+    # Serializes the lecturers for the Course
+    lecturers = LectureSerializer(many=True)
 
     class Meta:
         model = Course
