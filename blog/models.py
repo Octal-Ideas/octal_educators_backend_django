@@ -1,7 +1,7 @@
 # Import required modules
 # from django.contrib.auth.models import User
 import uuid
-import math
+from math import floor
 
 from django.conf import settings
 from django.db import models
@@ -100,65 +100,49 @@ class Blog(models.Model):
         super(Blog, self).save(*args, **kwargs)
 
     # Returns the time since the blog was published
+
+# This function returns a string representation of the time elapsed since the creation of an object.
     def whenpublished(self):
         now = timezone.now()
 
+        # Calculate the time difference between the current time and the object creation time
         diff = now - self.created_at
 
-        if diff.days == 0 and diff.seconds >= 0 and diff.seconds < 60:
-            seconds = diff.seconds
-
-            if seconds == 1:
+        # Check if the time difference is less than a day
+        if diff.days == 0:
+            # If the time difference is less than a minute
+            if diff.seconds < 60:
                 return "Just now"
-
+            # If the time difference is less than an hour
+            elif diff.seconds < 3600:
+                # Calculate the number of minutes
+                minutes = floor(diff.seconds / 60)
+                # Return the formatted string with the number of minutes
+                return f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+            # If the time difference is greater than an hour
             else:
-                return "Just now"
-
-        if diff.days == 0 and diff.seconds >= 60 and diff.seconds < 3600:
-            minutes = math.floor(diff.seconds/60)
-
-            if minutes == 1:
-                return str(minutes) + " minute ago"
-
-            else:
-                return str(minutes) + " minutes ago"
-
-        if diff.days == 0 and diff.seconds >= 3600 and diff.seconds < 86400:
-            hours = math.floor(diff.seconds/3600)
-
-            if hours == 1:
-                return str(hours) + " hour ago"
-
-            else:
-                return str(hours) + " hours ago"
-
-        # 1 day to 30 days
-        if diff.days >= 1 and diff.days < 30:
+                # Calculate the number of hours
+                hours = floor(diff.seconds / 3600)
+                # Return the formatted string with the number of hours
+                return f"{hours} hour{'s' if hours > 1 else ''} ago"
+        # Check if the time difference is less than a month
+        elif diff.days < 30:
+            # Calculate the number of days
             days = diff.days
-
-            if days == 1:
-                return str(days) + " day ago"
-
-            else:
-                return str(days) + " days ago"
-
-        if diff.days >= 30 and diff.days < 365:
-            months = math.floor(diff.days/30)
-
-            if months == 1:
-                return str(months) + " month ago"
-
-            else:
-                return str(months) + " months ago"
-
-        if diff.days >= 365:
-            years = math.floor(diff.days/365)
-
-            if years == 1:
-                return str(years) + " year ago"
-
-            else:
-                return str(years) + " years ago"
+            # Return the formatted string with the number of days
+            return f"{days} day{'s' if days > 1 else ''} ago"
+        # Check if the time difference is less than a year
+        elif diff.days < 365:
+            # Calculate the number of months
+            months = floor(diff.days / 30)
+            # Return the formatted string with the number of months
+            return f"{months} month{'s' if months > 1 else ''} ago"
+        # If the time difference is greater than or equal to a year
+        else:
+            # Calculate the number of years
+            years = floor(diff.days / 365)
+            # Return the formatted string with the number of years
+            return f"{years} year{'s' if years > 1 else ''} ago"
 
     @property
     def comments(self):

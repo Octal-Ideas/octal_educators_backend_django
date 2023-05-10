@@ -94,7 +94,12 @@ class Lecture(models.Model):
     content = RichTextUploadingField()
     # Define the relationship with Course model
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name='lectures')
+        Course, on_delete=models.CASCADE, related_name='lecturers')
+
+    modified_at = models.DateField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="lectures", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         # Return the title as a string representation of the Lecture model
