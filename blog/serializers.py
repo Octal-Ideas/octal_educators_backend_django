@@ -17,8 +17,7 @@ class BlogSerializer( serializers.ModelSerializer):
     class Meta:
         model = Blog
         # Fields to serialize
-        fields = ('id', 'title', 'thumbnail', 'description',
-                  'slug', 'category',  'comments', "language", "photographer", "caption", "time_since_published",'likes_count',)
+        fields = "__all__"
         # Fields that are read-only
         read_only_fields = ('created_by', 'created_at', 'modified_at')
         

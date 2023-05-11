@@ -1,3 +1,7 @@
 {
-  "vue.codeActions.enabled": false
+  "vue.codeActions.enabled": false,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8"
+  },
+  "python.formatting.provider": "none"
 }
