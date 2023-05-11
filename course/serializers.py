@@ -12,7 +12,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields = '__all__'
+        fields = ('id','address','department','total_time' )       
         read_only_fields = ('created_by', 'created_at', 'modified_at')
 
 
@@ -29,6 +29,12 @@ class CourseSerializer(serializers.ModelSerializer):
     # Serializes the lecturers for the Course
     lecturers = LectureSerializer(many=True)
 
+    class Meta:
+        model = Course
+        fields = '__all__'
+        read_only_fields = ('created_by', 'created_at', 'modified_at')
+        
+class PublicCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
