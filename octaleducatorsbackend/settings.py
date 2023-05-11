@@ -117,6 +117,9 @@ THIRD_PARTY_APPS = [
     # Adding a richtext editor
     'ckeditor',
     'ckeditor_uploader',
+    
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
@@ -240,7 +243,13 @@ cloudinary.config(
     api_key=config('api_key'),
     api_secret=config('api_secret'),
 )
-
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('cloud_name'),
+    'API_KEY': config('api_key'),
+    'API_SECRET': config('api_secret'),
+    'MEDIA_TAG': 'blog_media',
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
@@ -305,9 +314,8 @@ REST_AUTH_SERIALIZERS = {
 
 # CKEDITOR configurations
 
-CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_IMAGE_BACKEND = "pillow"
-
+CKEDITOR_UPLOAD_PATH = 'ckeditor/uploads/'
+# CKEDITOR_IMAGE_BACKEND = "pillow"
 
 
 CKEDITOR_CONFIGS = {
