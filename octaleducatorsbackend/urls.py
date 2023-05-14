@@ -38,6 +38,8 @@ urlpatterns = [
     path('api/v1/', include('blog.urls')),
     path('api/v1/', include('theme.urls')),
     path('api/v1/', include('course.urls')),
+    path('api/v1/', include('search.urls')),
+
 
 
     path('', schema_view),
