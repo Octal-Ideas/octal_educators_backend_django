@@ -97,6 +97,7 @@ PROJECT_APPS = [
     'theme',
     'search',
     'course',
+    'lead.apps.LeadConfig',
 ]
 
 THIRD_PARTY_APPS = [
