@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework.response import Response
 
 from .models import Lead
 from .serializers import LeadSerializer
@@ -34,3 +35,6 @@ class LeadViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Sets the created_by field on the Lead object to the current user
         serializer.save(created_by=self.request.user if self.request.user.is_authenticated else None)
+        # Return a success message
+        message = "Lead successfully created"
+        return Response({"message": message}, status=status.HTTP_201_CREATED)
