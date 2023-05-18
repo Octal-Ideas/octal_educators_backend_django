@@ -82,12 +82,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = CloudinaryField('image',upload_preset='octalideas', blank=True, null=True)
     role = models.CharField(max_length=10, choices=ROLES, default='blogger')
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=200, unique=True,blank=True, null=True)
-    phone_number = PhoneNumberField(unique=True, blank=True, null=True)
-    first_name = models.CharField(max_length=30, blank=True, null=True)
-    last_name = models.CharField(max_length=30, blank=True, null=True)
+    username = models.CharField(max_length=200, unique=True, blank=True, null=True)
+    phone_number = PhoneNumberField(unique=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
@@ -107,16 +108,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_role(self):
         return self.role
     
-    @property
-    def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
     
     @property
     def is_superuser(self):
         "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
+        # Simplest possible answer: All admins are superusers
         return self.is_admin
 
     
