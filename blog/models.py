@@ -155,7 +155,7 @@ class Blog(models.Model):
 @receiver(pre_save, sender=Blog)
 def auto_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = create_slug(instance)
+        instance.slug = slugify(instance.title)
 
 
 # A model representing a comment on a blog post
