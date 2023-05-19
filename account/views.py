@@ -1,5 +1,11 @@
 from django.shortcuts import render
-from django.contrib.auth.hashers import make_password
+
+# from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+# from django.http import HttpResponse
+# from django.utils.encoding import force_bytes, force_str
+# from django.contrib.sites.shortcuts import get_current_site
+# from django.core.mail import EmailMessage
+# from django.template.loader import render_to_string
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -12,6 +18,7 @@ from rest_framework.throttling import UserRateThrottle
 from rest_framework.decorators import permission_classes, api_view
 
 
+# from .signals import account_activation_token
 from .throttles import AccountsRateThrottle
 from .models import User
 from .serializers import UserSerializer
@@ -64,6 +71,50 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     throttle_classes = [UserRateThrottle, AccountsRateThrottle]
     serializer_class = MyTokenObtainPairSerializer
+
+
+# def activate(request, uidb64, token):
+#     try:
+#         uid = force_str(urlsafe_base64_decode(uidb64))
+#         user = User.objects.get(pk=uid)
+#     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+#         user = None
+#     if user is not None and account_activation_token.check_token(user, token):
+#         user.is_active = True
+#         user.save()
+#         return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+#     else:
+#         return HttpResponse('Activation link is invalid!')
+
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def signup(request):
+#     if request.method == 'POST':
+#         serializer = UserSerializer(data=request.data)
+#         if serializer.is_valid():
+#             user = serializer.save()
+#             user.is_active = False
+#             user.save()
+#             # to get the domain of the current site
+#             current_site = get_current_site(request)
+#             mail_subject = 'Activation link has been sent to your email'
+#             message = render_to_string('acc_active_email.html', {
+#                 'user': user,
+#                 'domain': current_site.domain,
+#                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#                 'token': account_activation_token.make_token(user),
+#             })
+#             to_email = serializer.validated_data['email']
+#             email = EmailMessage(
+#                 mail_subject,
+#                 message,
+#                 to=[to_email]
+#             )
+#             email.send()
+#             return Response('Please confirm your email address to complete the registration')
+#     else:
+#         serializer = UserSerializer()
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
