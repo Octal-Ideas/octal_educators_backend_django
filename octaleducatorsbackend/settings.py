@@ -63,14 +63,14 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
-        'account.throttles.AccountsRateThrottle',
+        'accounts.throttles.AccountsRateThrottle',
         'blog.throttles.BlogRateThrottle',
         'course.throttles.CourseRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/day',
         'user': '500/day',
-        'account': '50/day',
+        'accounts': '50/day',
         'blog': '100/day',
         'course': '100/day',
 
@@ -88,13 +88,13 @@ DJANGO_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',    
+    'django.contrib.staticfiles',
     'django.contrib.sites',
 
 ]
 PROJECT_APPS = [
     'blog.apps.BlogConfig',
-    'account',
+    'accounts',
     'theme',
     'search',
     'course',
@@ -109,7 +109,7 @@ THIRD_PARTY_APPS = [
     'djoser',
     'taggit',
     'phonenumber_field',
-    
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -119,7 +119,7 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.twitter_oauth2',
-    
+
     'rest_auth',
     'rest_auth.registration',
     'rest_framework_simplejwt',
@@ -128,7 +128,7 @@ THIRD_PARTY_APPS = [
     # Adding a richtext editor
     'ckeditor',
     'ckeditor_uploader',
-    
+
     'cloudinary_storage',
     'cloudinary',
 ]
@@ -199,7 +199,7 @@ if os.environ.get('ENV') == 'production':
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -306,18 +306,18 @@ SIMPLE_JWT = {
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
-    
+
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 SITE_ID = 1
-ACCOUNT_AUTHENTICATION_METHOD = 'email_username_phone'
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 REST_AUTH_REGISTER_SERIALIZERS = {
@@ -360,6 +360,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD =config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = config('EMAIL_HOST')
