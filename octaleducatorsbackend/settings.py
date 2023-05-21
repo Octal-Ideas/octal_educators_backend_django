@@ -356,6 +356,7 @@ CKEDITOR_CONFIGS = {
 
 }
 
+#email configurations
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = config('EMAIL_HOST')
