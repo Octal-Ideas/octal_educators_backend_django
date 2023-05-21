@@ -6,7 +6,7 @@ from .models import Course, Department, Teacher, Lecture
 from .serializers import CourseSerializer, DepartmentSerializer, TeacherSerializer, LectureSerializer, PublicCourseSerializer
 from .pagination import CourseLimitOffsetPagination
 from .throttles import CourseRateThrottle
-from account.permissions import IsTeacherOrReadOnly, IsStudent
+from accounts.permissions import IsTeacherOrReadOnly, IsStudent
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
