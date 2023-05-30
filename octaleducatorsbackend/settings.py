@@ -342,7 +342,7 @@ SOCIALACCOUNT_PROVIDERS = {
             'key': ''
         }
     },
-    
+
     'google': {
         # For each OAuth based provider, either add a ``SocialApp``
         # (``socialaccount`` app) containing the required client
@@ -392,3 +392,19 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = config('EMAIL_HOST')
+
+
+# !Celery configuration
+CELERY_BROKER_URL = config('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TASK_SERIALIZER = 'json'
+
+# Specify the location of the Celery app
+CELERY_APP = 'octaleducatorsbackend.celery:app'
+
+# Add the Celery tasks module
+CELERY_IMPORTS = (
+    'task_manager.tasks',
+)
