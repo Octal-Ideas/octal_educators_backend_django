@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
+# todo add celery to make this send email work
+from task_manager.tasks import send_email_task
 
 
 from rest_framework.decorators import action, api_view
@@ -136,3 +137,12 @@ def post_like(request, pk):
 #             return JsonResponse({'message': 'like created'})
 #         else:
 #             return JsonResponse({'message': 'post already liked'})
+
+# !not working, waiting for celery
+def send_email(request):
+    # Code to gather the email subject, message, from_email, and recipient_list
+    subject = 'Hello'
+    message = 'This is a test email'
+    from_email = 'sender@example.com'
+    recipient_list = ['recipient@example.com']
+    send_email_task.delay(subject, message, from_email, recipient_list)
