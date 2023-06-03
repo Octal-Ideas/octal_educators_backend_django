@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 # todo add celery to make this send email work
 from task_manager.tasks import send_email_task
 
@@ -10,7 +11,7 @@ from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateMode
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 # from rest_framework.generics import RetrieveUpdateDestroyAPIView
-from rest_framework.throttling import UserRateThrottle
+from rest_framework.throttling import UserRateThrottle 
 
 from .serializers import BlogSerializer, CategorySerializer, CommentSerializer, ViewCountSerializer
 from .models import Blog, Category, Comment, ViewCount, Like

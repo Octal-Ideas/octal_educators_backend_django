@@ -49,7 +49,7 @@ class Blog(models.Model):
     # Fields for the blog post model
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255, blank=False)
-    thumbnail = CloudinaryField('image', upload_preset='octalideas')
+    thumbnail = CloudinaryField('image', upload_preset='octalideas', null=True, blank=True)
     description = models.CharField(max_length=500, null=True, blank=True)
     content = RichTextUploadingField()
     slug = models.SlugField(max_length=100, unique=True)
@@ -178,7 +178,7 @@ class Comment(models.Model):
 
     def __str__(self):
         # Returns the string representation of the comment object
-        return f'{self.author}\'s comment on {self.post}'
+        return f'{self.author.username}\'s comment on {self.post}'
 
     # Class for defining the ordering of comments
     class Meta:
