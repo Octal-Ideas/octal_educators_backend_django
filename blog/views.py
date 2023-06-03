@@ -120,6 +120,42 @@ def post_like(request, pk):
     else:
         return JsonResponse({'message': 'post already liked'})
     
+# subscribers
+@login_required
+def subscribe_to_blog(request, blog_id):
+    blog = get_object_or_404(Blog, id=blog_id)
+    blog.subscribers.add(request.user)
+    return JsonResponse({'message': 'subscribed'})
+
+@login_required
+def unsubscribe_from_blog(request, blog_id):
+    blog = get_object_or_404(Blog, id=blog_id)
+    blog.subscribers.remove(request.user)
+    return JsonResponse({'message': 'unsubscribed'})
+
+@login_required
+def is_user_subscribed(request, blog_id):
+    blog = Blog.objects.filter(id=blog_id, subscribers=request.user).exists()
+    return JsonResponse({'subscribed': blog})
+
+@login_required
+def list_subscribers(request, blog_id):
+    try:
+        blog = Blog.objects.get(id=blog_id)
+    except Blog.DoesNotExist:
+        return JsonResponse({'error': 'Blog not found'}, status=404)
+
+    if blog.owner == request.user or request.user.is_superuser:
+        # User is the owner of the blog or an admin
+        subscribers = blog.subscribers.all()
+        subscriber_list = [subscriber.username for subscriber in subscribers]
+
+        return JsonResponse({'subscribers': subscriber_list})
+    else:
+        # User is not the owner or an admin, only return the total number of subscribers
+        subscriber_count = blog.subscribers.count()
+
+        return JsonResponse({'subscriber_count': subscriber_count})
     
 #TODO class based likes
 # class PostLikeView(APIView):
