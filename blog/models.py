@@ -64,6 +64,8 @@ class Blog(models.Model):
     caption = models.CharField(max_length=255, blank=True)
     likes = models.ManyToManyField(Like, blank=True)
     likes_count = models.IntegerField(default=0)
+    subscribers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='blog_subscriptions', blank=True)
+
 
     def __str__(self):
         return self.title
