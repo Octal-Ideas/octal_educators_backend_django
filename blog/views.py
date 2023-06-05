@@ -17,13 +17,16 @@ from .serializers import BlogSerializer, CategorySerializer, CommentSerializer, 
 from .models import Blog, Category, Comment, ViewCount, Like
 from .pagination import PostLimitOffsetPagination
 from .throttles import BlogRateThrottle
-class ReadOnlyOrAuthenticated(BasePermission):
-    # Custom permission class that allows read access to anyone, but only allows
-    # authenticated users to modify the data
-    def has_permission(self, request, view):
-        if request.method in SAFE_METHODS:
-            return True
-        return request.user.is_authenticated
+
+from accounts.permissions import ReadOnlyOrAuthenticated
+
+# class ReadOnlyOrAuthenticated(BasePermission):
+#     # Custom permission class that allows read access to anyone, but only allows
+#     # authenticated users to modify the data
+#     def has_permission(self, request, view):
+#         if request.method in SAFE_METHODS:
+#             return True
+#         return request.user.is_authenticated
 
 # Viewset for the Blog model
 class BlogViewSet(

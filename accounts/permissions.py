@@ -1,5 +1,13 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
+class ReadOnlyOrAuthenticated(BasePermission):
+    # Custom permission class that allows read access to anyone, but only allows
+    # authenticated users to modify the data
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.is_authenticated
+
 # Custom permission class to allow read operations to all users and write operations only to teacher users
 class IsTeacherOrReadOnly(BasePermission):
     def has_permission(self, request, view):

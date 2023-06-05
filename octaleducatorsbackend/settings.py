@@ -99,6 +99,9 @@ PROJECT_APPS = [
     'search',
     'course',
     'lead.apps.LeadConfig',
+    'subscriber.apps.SubscriberConfig',
+    'notification.apps.NotificationConfig',
+
 ]
 
 THIRD_PARTY_APPS = [

@@ -41,6 +41,8 @@ urlpatterns = [
     path('api/v1/', include('search.urls')),
     path('api/v1/', include('lead.urls')),
     
+     path('api/v1/', include('subscriber.urls')),
+    
 
 
 
