@@ -5,8 +5,6 @@ from .models import Subscriber
 from .serializers import SubscriberSerializer
 
 
-
-
 class SubscriberCreateView(generics.CreateAPIView):
     queryset = Subscriber.objects.all()
     permission_classes = [permissions.IsAuthenticated]
@@ -56,9 +54,5 @@ class TotalSubscriberView(generics.RetrieveAPIView):
     serializer_class = SubscriberSerializer
 
     def retrieve(self, request, *args, **kwargs):
-        user = self.request.user
-        if user.is_staff or user.is_superuser:
-            total_subscribers = Subscriber.objects.count()
-            return Response({"total_subscribers": total_subscribers})
-        else:
-            return Response({"error": "You are not authorized to view the total subscribers."}, status=status.HTTP_403_FORBIDDEN)
+        total_subscribers = Subscriber.objects.count()
+        return Response({"total_subscribers": total_subscribers})
