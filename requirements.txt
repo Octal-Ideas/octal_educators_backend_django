@@ -15,8 +15,9 @@ coreapi==2.3.3
 coreschema==0.0.4
 cryptography==39.0.1
 defusedxml==0.7.1
+dj-rest-auth==4.0.0
 Django==4.2
-django-allauth==0.54.0
+django-allauth==0.52.0
 django-ckeditor==6.5.1
 django-cloudinary-storage==0.3.0
 django-cors-headers==3.13.0
