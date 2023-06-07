@@ -18,6 +18,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
+# from dj_rest_auth.registration.views import VerifyEmailView
+
 from rest_framework_swagger.views import get_swagger_view
 
 schema_view = get_swagger_view(title='API Documentation')
@@ -31,8 +34,9 @@ urlpatterns = [
 
     # path('api/v1/', include('djoser.urls')),
     # path('api/v1/', include('djoser.urls.authtoken')),
-     path('accounts/', include('allauth.urls')),
-
+    #  path('accounts/', include('allauth.urls')),
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+  
 
     path('api/v1/', include('accounts.urls')),
     path('api/v1/', include('blog.urls')),
