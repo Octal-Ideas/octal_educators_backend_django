@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.conf import settings
+from django.http import HttpResponseRedirect
 
 # from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 # from django.http import HttpResponse
@@ -17,6 +19,9 @@ from rest_framework.views import APIView
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.decorators import permission_classes, api_view
 
+from dj_rest_auth.registration.views import RegisterView
+from rest_framework import permissions
+
 
 # from .signals import account_activation_token
 from .throttles import AccountsRateThrottle
@@ -26,7 +31,15 @@ from .serializers import UserSerializer
 from lead.models import Lead
 
 
+
+
+class CustomRegisterView(RegisterView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]
+
 # Creating a view for the UserList
+
+
 class UserList(APIView):
     # Specifying permission classes
     permission_classes = [IsAdminUser | AllowAny]
@@ -73,48 +86,17 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-# def activate(request, uidb64, token):
-#     try:
-#         uid = force_str(urlsafe_base64_decode(uidb64))
-#         user = User.objects.get(pk=uid)
-#     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-#         user = None
-#     if user is not None and account_activation_token.check_token(user, token):
-#         user.is_active = True
-#         user.save()
-#         return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
-#     else:
-#         return HttpResponse('Activation link is invalid!')
+def email_confirm_redirect(request, key):
+    return HttpResponseRedirect(
+        f"{settings.EMAIL_CONFIRM_REDIRECT_BASE_URL}{key}/"
+    )
 
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def signup(request):
-#     if request.method == 'POST':
-#         serializer = UserSerializer(data=request.data)
-#         if serializer.is_valid():
-#             user = serializer.save()
-#             user.is_active = False
-#             user.save()
-#             # to get the domain of the current site
-#             current_site = get_current_site(request)
-#             mail_subject = 'Activation link has been sent to your email'
-#             message = render_to_string('acc_active_email.html', {
-#                 'user': user,
-#                 'domain': current_site.domain,
-#                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-#                 'token': account_activation_token.make_token(user),
-#             })
-#             to_email = serializer.validated_data['email']
-#             email = EmailMessage(
-#                 mail_subject,
-#                 message,
-#                 to=[to_email]
-#             )
-#             email.send()
-#             return Response('Please confirm your email address to complete the registration')
-#     else:
-#         serializer = UserSerializer()
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def password_reset_confirm_redirect(request, uidb64, token):
+    return HttpResponseRedirect(
+        f"{settings.PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL}{uidb64}/{token}/"
+    )
+
 
 
 @api_view(['POST'])
