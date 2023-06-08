@@ -55,8 +55,6 @@ REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -339,7 +337,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
-ACCOUNT_EMAIL_VERIFICATION = 'none' #set to mandantory if verification is needed
+ACCOUNT_EMAIL_VERIFICATION = 'optional' #set to mandatory if verification is needed
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
@@ -369,11 +367,12 @@ SOCIALACCOUNT_PROVIDERS = {
 # core/settings.py
 
 # <EMAIL_CONFIRM_REDIRECT_BASE_URL>/<key>
-EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/email/confirm/"
+# EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/email/confirm/"
 
 # <PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL>/<uidb64>/<token>/
-PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL ="http://localhost:3000/password-reset/confirm/"
+# PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL ="http://localhost:3000/password-reset/confirm/"
 
+USE_JWT = True
 
 # CKEDITOR configurations
 
@@ -405,8 +404,6 @@ CKEDITOR_CONFIGS = {
 
 # email configurations
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-# EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/email')
 EMAIL_USE_TLS = True
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
