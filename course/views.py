@@ -50,7 +50,7 @@ class LectureViewSet(viewsets.ModelViewSet):
         serializer.save(created_by=self.request.user)
 
 class CourseViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsTeacherOrReadOnly]
+    permission_classes = [IsTeacherOrReadOnly]
     queryset = Course.objects.all()
     pagination_class = CourseLimitOffsetPagination
     throttle_classes = [throttling.UserRateThrottle, CourseRateThrottle]

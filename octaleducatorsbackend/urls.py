@@ -41,6 +41,9 @@ urlpatterns = [
     path('api/v1/', include('search.urls')),
     path('api/v1/', include('lead.urls')),
     
+    # notification url
+    path('api/v1/', include('notification.urls')),
+    
 
 
 
