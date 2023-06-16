@@ -131,3 +131,4 @@ cython_debug/
 
 staticfiles/
 static/
+.vscode/settings.json

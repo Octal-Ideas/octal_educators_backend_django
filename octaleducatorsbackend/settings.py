@@ -105,32 +105,24 @@ PROJECT_APPS = [
 
 THIRD_PARTY_APPS = [
     'whitenoise.runserver_nostatic',
-    'rest_framework',
-    'rest_framework.authtoken',
+    
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",   
     'corsheaders',
     'djoser',
+    
     'taggit',
     'phonenumber_field',
 
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    # ... include the providers you want to enable:
-    'allauth.socialaccount.providers.github',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.twitter',
-    'allauth.socialaccount.providers.twitter_oauth2',
-
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
-    'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
-    'rest_framework_swagger',
+#api docs 
+    "drf_yasg",
+    
     # Adding a richtext editor
     'ckeditor',
     'ckeditor_uploader',
 
+#save images
     'cloudinary_storage',
     'cloudinary',
 ]
@@ -296,8 +288,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 
-    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.MyTokenObtainPairSerializer",
-    # "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
     "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
     "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
     "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
@@ -305,72 +295,51 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
-# REST_AUTH_REGISTER_SERIALIZERS = {
-#     'REGISTER_SERIALIZER': 'api.serializers.RegisterSerializer'
-# }
-REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': 'accounts.serializers.UserSerializer'
+
+
+# DJOSER CONFIG
+DJOSER = { 
+    "LOGIN_FIELD": "email",
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "SET_USERNAME_RETYPE": True,
+    "SET_PASSWORD_RETYPE": True,
+    "USERNAME_RESET_CONFIRM_URL": "#/email/reset/confirm/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "#/password/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "#/activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [
+        'http://127.0.0.1:8000', 'http://127.0.0.1:8000/','http://127.0.0.1:8000/signin'
+    ],
+    "SERIALIZERS": {
+        "user_create": "Accounts.serializers.UserSerializer",  
+        "user": "djoser.serializers.UserSerializer",
+        "current_user": "djoser.serializers.UserSerializer",
+        "user_delete": "djoser.serializers.UserSerializer",
+    },
 }
 
 
-REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'api.serializers.UserSerializer'
-}
-# REST_AUTH = {
-#     'JWT_AUTH_COOKIE': 'my-app-auth',
-#     'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-token',
-# }
 
-# django-allauth
+# django-social auth
 AUTHENTICATION_BACKENDS = (
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend'
 )
 
-SITE_ID = 1
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
-ACCOUNT_EMAIL_VERIFICATION = 'optional' #set to mandatory if verification is needed
-
-# Provider specific settings
-SOCIALACCOUNT_PROVIDERS = {
-    'github': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': config('GITHUB_CLIENT_ID'),
-            'secret': config('GITHUB_SECRET'),
-            'key': ''
-        }
-    },
-
-    'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': config('GOOGLE_CLIENT_ID'),
-            'secret': config('GOOGLE_SECRET'),
-            'key': ''
-        }
-    }
-}
-
-# core/settings.py
-
-# <EMAIL_CONFIRM_REDIRECT_BASE_URL>/<key>
-# EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/email/confirm/"
-
-# <PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL>/<uidb64>/<token>/
-# PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL ="http://localhost:3000/password-reset/confirm/"
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY= config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'openid'
+]
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
+SITE_ID=1
 
 USE_JWT = True
 
