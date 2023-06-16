@@ -47,6 +47,8 @@ urlpatterns = [
     path("api/v1/", include("djoser.urls")),
     path("api/v1/", include("djoser.urls.jwt")),
     path("api/v1/", include("djoser.social.urls")),
+    
+    path('oauth/', include('social_django.urls', namespace='social')),
   
     re_path(
         r"^api/v1/docs/$",
