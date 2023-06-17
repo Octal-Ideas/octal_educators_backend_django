@@ -1,6 +1,8 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.contrib.auth.decorators import login_required
+# todo add celery to make this send email work
+from task_manager.tasks import send_email_task
 
 
 from rest_framework.decorators import action, api_view
@@ -9,19 +11,22 @@ from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateMode
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 # from rest_framework.generics import RetrieveUpdateDestroyAPIView
-from rest_framework.throttling import UserRateThrottle
+from rest_framework.throttling import UserRateThrottle 
 
 from .serializers import BlogSerializer, CategorySerializer, CommentSerializer, ViewCountSerializer
 from .models import Blog, Category, Comment, ViewCount, Like
 from .pagination import PostLimitOffsetPagination
 from .throttles import BlogRateThrottle
-class ReadOnlyOrAuthenticated(BasePermission):
-    # Custom permission class that allows read access to anyone, but only allows
-    # authenticated users to modify the data
-    def has_permission(self, request, view):
-        if request.method in SAFE_METHODS:
-            return True
-        return request.user.is_authenticated
+
+from accounts.permissions import ReadOnlyOrAuthenticated
+
+# class ReadOnlyOrAuthenticated(BasePermission):
+#     # Custom permission class that allows read access to anyone, but only allows
+#     # authenticated users to modify the data
+#     def has_permission(self, request, view):
+#         if request.method in SAFE_METHODS:
+#             return True
+#         return request.user.is_authenticated
 
 # Viewset for the Blog model
 class BlogViewSet(
@@ -119,6 +124,42 @@ def post_like(request, pk):
     else:
         return JsonResponse({'message': 'post already liked'})
     
+# subscribers
+@login_required
+def subscribe_to_blog(request, blog_id):
+    blog = get_object_or_404(Blog, id=blog_id)
+    blog.subscribers.add(request.user)
+    return JsonResponse({'message': 'subscribed'})
+
+@login_required
+def unsubscribe_from_blog(request, blog_id):
+    blog = get_object_or_404(Blog, id=blog_id)
+    blog.subscribers.remove(request.user)
+    return JsonResponse({'message': 'unsubscribed'})
+
+@login_required
+def is_user_subscribed(request, blog_id):
+    blog = Blog.objects.filter(id=blog_id, subscribers=request.user).exists()
+    return JsonResponse({'subscribed': blog})
+
+@login_required
+def list_subscribers(request, blog_id):
+    try:
+        blog = Blog.objects.get(id=blog_id)
+    except Blog.DoesNotExist:
+        return JsonResponse({'error': 'Blog not found'}, status=404)
+
+    if blog.owner == request.user or request.user.is_superuser:
+        # User is the owner of the blog or an admin
+        subscribers = blog.subscribers.all()
+        subscriber_list = [subscriber.username for subscriber in subscribers]
+
+        return JsonResponse({'subscribers': subscriber_list})
+    else:
+        # User is not the owner or an admin, only return the total number of subscribers
+        subscriber_count = blog.subscribers.count()
+
+        return JsonResponse({'subscriber_count': subscriber_count})
     
 #TODO class based likes
 # class PostLikeView(APIView):
@@ -136,3 +177,12 @@ def post_like(request, pk):
 #             return JsonResponse({'message': 'like created'})
 #         else:
 #             return JsonResponse({'message': 'post already liked'})
+
+# !not working, waiting for celery
+def send_email(request):
+    # Code to gather the email subject, message, from_email, and recipient_list
+    subject = 'Hello'
+    message = 'This is a test email'
+    from_email = 'sender@example.com'
+    recipient_list = ['recipient@example.com']
+    send_email_task.delay(subject, message, from_email, recipient_list)

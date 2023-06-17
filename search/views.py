@@ -5,8 +5,8 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 
 
-from account.models import User
-from account.serializers import UserSerializer
+from accounts.models import User
+from accounts.serializers import UserSerializer
 
 from blog.models import Blog
 from blog.serializers import BlogSerializer
