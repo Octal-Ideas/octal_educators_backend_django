@@ -14,13 +14,28 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include,  re_path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from rest_framework_swagger.views import get_swagger_view
 
-schema_view = get_swagger_view(title='API Documentation')
+
+# DRF YASG
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="API Documentation",
+        default_version="v1",
+        description="REST implementation of Django authentication system. djoser library provides a set of Django Rest Framework views to handle basic actions such as registration, login, logout, password reset and account activation. It works with custom user model.",
+        contact=openapi.Contact(email="contact@snippets.local"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 admin.site.site_header = "Octal Ideas Admin"
 admin.site.site_title = "Octal Ideas Admin Portal"
@@ -29,22 +44,27 @@ admin.site.index_title = "Welcome to Octal Ideas Educator"
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('api/v1/', include('djoser.urls')),
-    path('api/v1/', include('djoser.urls.authtoken')),
+    path("api/v1/", include("djoser.urls")),
+    path("api/v1/", include("djoser.urls.jwt")),
+    path("api/v1/", include("djoser.social.urls")),
+    
+    path('oauth/', include('social_django.urls', namespace='social')),
+  
+    re_path(
+        r"^api/v1/docs/$",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
 
-
-
-    path('api/v1/', include('account.urls')),
+    path('api/v1/', include('accounts.urls')),
     path('api/v1/', include('blog.urls')),
     path('api/v1/', include('theme.urls')),
     path('api/v1/', include('course.urls')),
     path('api/v1/', include('search.urls')),
     path('api/v1/', include('lead.urls')),
     
-
-
-
-    path('', schema_view),
+     path('api/v1/', include('subscriber.urls')),
+    
     path('ckeditor/', include('ckeditor_uploader.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

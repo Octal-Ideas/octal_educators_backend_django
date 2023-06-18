@@ -1,3 +1,4 @@
+
 import json
 from django.shortcuts import render
 from account.models import User
@@ -72,4 +73,4 @@ def unsubscription(request):
         
     user.is_subscribed=False
     user.save()
-    return JsonResponse({'message':'user unsubscribed'}, status=200)
+    return JsonResponse({'message':'user unsubscribed'}, status=200
