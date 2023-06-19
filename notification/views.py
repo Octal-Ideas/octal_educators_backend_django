@@ -1,7 +1,7 @@
 
 import json
 from django.shortcuts import render
-from account.models import User
+from accounts.models import User
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.http import JsonResponse
@@ -73,4 +73,4 @@ def unsubscription(request):
         
     user.is_subscribed=False
     user.save()
-    return JsonResponse({'message':'user unsubscribed'}, status=200
+    return JsonResponse({'message':'user unsubscribed'}, status=200)

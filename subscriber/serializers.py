@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Subscriber
 
 from accounts.models import User
-from notification.utils import create_notification
+from notification.views import notification
 
 
 class SubscriberSerializer(serializers.ModelSerializer):
@@ -41,7 +41,7 @@ class SubscriberSerializer(serializers.ModelSerializer):
             content_owner.subscribers.add(user)
             print(user)
             # Create a notification for the subscription
-            notification = create_notification(
+            notifications = notification(
                 self.context['request'], 'subscribe', subscribe_id=content_owner_id
             )
 
