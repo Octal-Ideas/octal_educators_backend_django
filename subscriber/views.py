@@ -1,58 +1,63 @@
-from rest_framework import generics, permissions, status
-from rest_framework.response import Response
-
 from .models import Subscriber
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from .serializers import SubscriberSerializer
 
+from accounts.models import User
+from accounts.permissions import ReadOnlyOrAuthenticated
 
-class SubscriberCreateView(generics.CreateAPIView):
-    queryset = Subscriber.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+
+class SubscriberViewSet(viewsets.ViewSet):
     serializer_class = SubscriberSerializer
+    permission_classes = [ReadOnlyOrAuthenticated]
 
-    # def perform_create(self, serializer):
-    #     # Automatically set the user field to the authenticated user
-    #     serializer.save(user=self.request.user)
-    #     # Add the user to the subscribers list of the content owner
-    #     content_owner_id = self.request.data.get('content_owner_id')
-    #     if content_owner_id:
-    #         content_owner = User.objects.get(pk=content_owner_id)
-    #         content_owner.subscriber.subscribers.add(self.request.user)
-    #         notification = create_notification(
-    #             self.request, 'subscribe', subscribe_id=content_owner_id)
+    # Action for subscribing to a user's content
+    @action(detail=False, methods=['post'])
+    def subscribe(self, request):
+        user = request.user
+        subscription_id = request.data.get('subscription')
 
+        # Check if the subscription ID exists
+        try:
+            subscription_user = User.objects.get(id=subscription_id)
+        except User.DoesNotExist:
+            return Response({'message': 'Invalid subscription ID'}, status=400)
 
-class SubscriberRetrieveDestroyView(generics.RetrieveDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Subscriber.objects.all()
-    serializer_class = SubscriberSerializer
+        if user == subscription_user:
+            return Response({'message': 'Cannot subscribe to your own user account'}, status=400)
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance.user == request.user:
-            self.perform_destroy(instance)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        subscriber, created = Subscriber.objects.get_or_create(user=user)
+
+        if subscription_user in subscriber.subscription.all():
+            # Already subscribed, so unsubscribe
+            subscriber.subscription.remove(subscription_user)
+            return Response({'message': 'Unsubscribed successfully'}, status=200)
         else:
-            return Response({"error": "You are not authorized to unsubscribe."}, status=status.HTTP_403_FORBIDDEN)
+            # Subscribe
+            subscriber.subscription.add(subscription_user)
+            serializer = self.serializer_class(subscriber)
+            return Response(serializer.data, status=200)
 
+    # Action for getting the users to whom the logged-in user has subscribed
+    @action(detail=False, methods=['get'])
+    def subscribed_users(self, request):
+        subscriber = request.user.subscriber
+        subscribed_users = subscriber.get_subscribed_users()
+        serializer = self.serializer_class(subscribed_users, many=True)
+        return Response(serializer.data, status=200)
 
-class SubscriberListView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = SubscriberSerializer
+    # Action for getting the users who have subscribed to the logged-in user's content
+    @action(detail=False, methods=['get'])
+    def subscriber_users(self, request):
+        subscriber = request.user.subscriber
+        subscriber_users = subscriber.get_subscriber_users()
+        serializer = self.serializer_class(subscriber_users, many=True)
+        return Response(serializer.data, status=200)
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_staff or user.is_superuser:
-            return Subscriber.objects.all()
-        else:
-            return Subscriber.objects.filter(content_owner=user)
-
-
-class TotalSubscriberView(generics.RetrieveAPIView):
-    permission_classes = [permissions.AllowAny]
-    queryset = Subscriber.objects.all()
-    serializer_class = SubscriberSerializer
-
-    def retrieve(self, request, *args, **kwargs):
-        total_subscribers = Subscriber.objects.count()
-        return Response({"total_subscribers": total_subscribers})
+    # Action for getting the total number of subscribers of the logged-in user
+    @action(detail=False, methods=['get'])
+    def total_subscribers(self, request):
+        subscriber = request.user.subscriber
+        total_subscribers = subscriber.get_subscriber_users().count()
+        return Response({'total_subscribers': total_subscribers}, status=200)
