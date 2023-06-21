@@ -44,27 +44,27 @@ jobs:
         env:
           DEBUG: False
           SECRET_KEY: CI_CD_TEST_KEY
-          ALLOWED_HOSTS: localhost:8000
-          DATABASE_USER: postgres
-          DATABASE_PASSWORD: postgres
-          DATABASE_DB: djtesting
-          DATABASE_PORT: 5432
-          DATABASE_HOST: localhost
-          cloud_name : dny99bi987oie
-          api_secret : LY_OSICOw676kySqISL2UO2auU
-          api_key: 793427527149657
-          EMAIL_HOST: smtp.gmail.com
-          EMAIL_HOST_USER: youremail@gmail.com
-          EMAIL_HOST_PASSWORD: yourpassword  
-          EMAIL_PORT: 587  
-          GITHUB_CLIENT_ID: 9768d8871b09d781b95a
-          GITHUB_SECRET: 29f8ecd629c79aa4c3a875ba6943366d8238d9c4
-          SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: 701550052188-eid7v46tt1iauuis8uh2kldetaugjo.apps.googleusercontent.com
-          SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: GORSPX-7V2AxuZMuTdLRKgXMwowO7mOYGpg    
-          SOCIAL_AUTH_FACEBOOK_KEY: 985292215170699  
-          SOCIAL_AUTH_FACEBOOK_SECRET: 7b8483ff422109a7c17b3f7a03966bbf
-          CELERY_BROKER_URL: redis://your-rediscloud-url:your-rediscloud-port/0
-          CELERY_RESULT_BACKEND: redis://your-rediscloud-url:your-rediscloud-port/0
+          ALLOWED_HOSTS: ALLOWED_HOSTS
+          DATABASE_USER: DATABASE_USER
+          DATABASE_PASSWORD: DATABASE_PASSWORD
+          DATABASE_DB: DATABASE_DB
+          DATABASE_PORT: DATABASE_PORT
+          DATABASE_HOST: DATABASE_HOST
+          cloud_name : cloud_name
+          api_secret : api_secret
+          api_key: api_key
+          EMAIL_HOST: EMAIL_HOST
+          EMAIL_HOST_USER: EMAIL_HOST_USER
+          EMAIL_HOST_PASSWORD: EMAIL_HOST_PASSWORD  
+          EMAIL_PORT: EMAIL_PORT  
+          GITHUB_CLIENT_ID: GITHUB_CLIENT_ID
+          GITHUB_SECRET: GITHUB_SECRET
+          SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+          SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET    
+          SOCIAL_AUTH_FACEBOOK_KEY: SOCIAL_AUTH_FACEBOOK_KEY  
+          SOCIAL_AUTH_FACEBOOK_SECRET: SOCIAL_AUTH_FACEBOOK_SECRET
+          CELERY_BROKER_URL: CELERY_BROKER_URL
+          CELERY_RESULT_BACKEND: CELERY_RESULT_BACKEND
           
         run: |
           python manage.py migrate
