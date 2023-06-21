@@ -1,0 +1,60 @@
+name: CI Django & Postgres Tests
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  pull_request:
+    branches: [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  
+  workflow_dispatch:
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+
+  push:
+    branches: [ "main" ]
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    services:
+      postgres_main:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: djtesting
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4.1.0
+        with:
+          python-version: '3.10'
+
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+      - name: Run Tests
+        env:
+          DEBUG: False
+          SECRET_KEY: CI_CD_TEST_KEY
+          ALLOWED_HOSTS: localhost:8000
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_DB: djtesting
+          DATABASE_PORT: 5432
+          DATABASE_HOST: localhost
+          EMAIL_HOST: test
+          EMAIL_PORT: 123
+          EMAIL_HOST_USER: test
+          EMAIL_HOST_PASSWORD: test
+          
+        run: |
+          python manage.py migrate
+          python manage.py test
