@@ -34,12 +34,14 @@ class SubscriberViewSet(viewsets.ViewSet):
         if subscription_user in subscriber.subscription.all():
             # Already subscribed, so unsubscribe
             subscriber.subscription.remove(subscription_user)
+            subscription_user.subscribers.remove(user)
             notification = create_notification(
                 request=request, type_of_notification='unsubscribe', subscribe_id=subscription_user)
             return Response({'message': 'Unsubscribed successfully'}, status=200)
         else:
             # Subscribe
             subscriber.subscription.add(subscription_user)
+            subscription_user.subscribers.add(user)
             serializer = self.serializer_class(subscriber)
             notification = create_notification(
                 request=request, type_of_notification='subscribe', subscribe_id=subscription_user)
@@ -60,22 +62,13 @@ class SubscriberViewSet(viewsets.ViewSet):
     # !not working
     @action(detail=False, methods=['get'])
     def subscribers(self, request):
-        # try:
-
-        subscriber = request.user.subscriber
-        subscribed_users = subscriber.get_subscriber_users()
+        user = request.user
+        subscribed_users = user.subscribers.all()  # Updated code
         serializer = self.serializer_class(subscribed_users, many=True)
         return Response(serializer.data, status=200)
-        # except:
-        # return Response({'message': 'you have no subscribers'}, status=400)
-
-    # Action for getting the total number of subscribers of the logged-in user
 
     @action(detail=False, methods=['get'])
     def total_subscribers(self, request):
-        # try:
-        subscriber = request.user.subscriber
-        total_subscribers = subscriber.get_subscriber_users().count()
+        user = request.user
+        total_subscribers = user.subscribers.count()  # Updated code
         return Response({'total_subscribers': total_subscribers}, status=200)
-        # except:
-        # return Response({'message': 'you have no subscribers'}, status=400)
