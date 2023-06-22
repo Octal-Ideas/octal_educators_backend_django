@@ -62,7 +62,7 @@ urlpatterns = [
     path('api/v1/', include('course.urls')),
     path('api/v1/', include('search.urls')),
     path('api/v1/', include('lead.urls')),
-    
+    path('api/v1/', include('notification.urls')),
      path('api/v1/', include('subscriber.urls')),
     
     path('ckeditor/', include('ckeditor_uploader.urls'))
