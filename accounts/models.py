@@ -98,6 +98,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=30)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    subscribers = models.ManyToManyField(
+        'self', symmetrical=False, related_name='my_subscribers')
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
