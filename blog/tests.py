@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
-from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework import status
+from rest_framework.test import APIRequestFactory, APITestCase
 
 from .models import Blog, ViewCount, Comment, Like, Category
 from .views import BlogViewSet, CategoryViewSet, CommentViewSet, ViewCountViewSet, post_like
