@@ -9,10 +9,6 @@ from rest_framework.views import APIView
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.decorators import permission_classes, api_view
 
-
-
-
-# from .signals import account_activation_token
 from .throttles import AccountsRateThrottle
 from .models import User
 from .serializers import UserSerializer

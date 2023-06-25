@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 # todo add celery to make this send email work
 from task_manager.tasks import send_email_task
 
-
+from rest_framework import status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin, UpdateModelMixin
@@ -55,8 +55,8 @@ class BlogViewSet(
             serializer.validated_data['created_by'] = self.request.user
             serializer.save()
             print("created owner of the blog")
-            
-            return Response(serializer.data, status=200)
+
+            return Response(serializer.data, status=201)
         else:
             return Response({"errors": serializer.errors}, status=400)
 
@@ -83,10 +83,10 @@ class CommentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin, CreateM
         if serializer.is_valid(raise_exception=True):
             serializer.save(created_by=request.user, post=post)
             notification = create_notification(
-            request, 'blog_comment', post_id=post.id)
-            return Response(serializer.data, status=200)
+                request, 'blog_comment', blog_id=post.id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response({"errors": serializer.errors}, status=400)
+            return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 # # Viewset to handle view count operations for blog posts
 
@@ -123,11 +123,11 @@ def post_like(request, pk):
 
         # Increment likes count for blog post and add new like object
         post = Blog.objects.get(pk=pk)
-        post.likes_count = post.likes_count + 1
         post.likes.add(like)
+        post.likes_count = post.likes_count + 1
         post.save()
         notification = create_notification(
-            request, 'post_like', post_id=post.id)
+            request, 'blog_like', blog_id=post.id)
 
         return JsonResponse({'message': 'like created'})
     else:
