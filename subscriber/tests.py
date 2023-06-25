@@ -1,14 +1,12 @@
 from django.test import TestCase
-
-
-from accounts.models import User
-from subscriber.models import Subscriber
-
 from django.urls import reverse
+
 from rest_framework import status
 from rest_framework.test import APITestCase
+
 from accounts.models import User
 from accounts.tests import create_test_user,create_test_user_sub
+from subscriber.models import Subscriber
 # # Create your tests here.
 class SubscriberModelTest(TestCase):
     def setUp(self):
