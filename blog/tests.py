@@ -1,13 +1,15 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from django.urls import reverse
-from rest_framework.test import APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework import status
+
 from .models import Blog, ViewCount, Comment, Like, Category
 from .views import BlogViewSet, CategoryViewSet, CommentViewSet, ViewCountViewSet, post_like
 from accounts.models import User
 from notification.models import Notification
 
 
-class BlogViewSetTestCase(TestCase):
+class BlogViewSetTestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.user = User.objects.create_user(
@@ -20,19 +22,22 @@ class BlogViewSetTestCase(TestCase):
     def test_blog_list(self):
         url = reverse('blogs-list')
         request = self.factory.get(url)
-        force_authenticate(request, user=self.user)
+        self.client.force_authenticate(user=self.user)
         response = self.viewset(request)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_blog_create(self):
         url = reverse('blogs-list')
-        data = {'title': 'New Blog', 'content': 'New Content'}
-        request = self.factory.post(url, data)
-        force_authenticate(request, user=self.user)
-        response = self.viewset(request)
-        self.assertEqual(response.status_code, 200)
+        self.category = Category.objects.create(title='Test Category 2')
+        data = {'title': 'New Blog', 'content': 'New Content', 'category': str(
+            self.category.id), 'created_by_id': str(self.user.id), 'slug': 'test-blog2'}
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(url, data)
+        # self.client.force_authenticate(user=self.user)
+        # response = self.viewset(request)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Blog.objects.count(), 2)
-        self.assertEqual(Blog.objects.last().title, 'New Blog')
+        self.assertEqual(Blog.objects.first().title, 'New Blog')
 
 
 class CategoryViewSetTestCase(TestCase):
@@ -44,17 +49,17 @@ class CategoryViewSetTestCase(TestCase):
         url = reverse('categories-list')
         request = self.factory.get(url)
         response = self.viewset(request)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class CommentViewSetTestCase(TestCase):
+class CommentViewSetTestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.user = User.objects.create_user(
-            username='testuser', email='test@example.com', password='testpassword', phone_number='+1234967890', first_name='John', last_name='Doe')
+            username='testuser', email='test2@example.com', password='testpassword', phone_number='+1234907090', first_name='John', last_name='Doe')
         self.category = Category.objects.create(title='Test Category')
         self.blog = Blog.objects.create(
-            title='Test Blog', content='Test Content', category=self.category, created_by_id=self.user.id, slug='test-blog')
+            title='Test Blog', content='Test Content', category=self.category, created_by_id=self.user.id, slug='test-blog2')
         self.viewset = CommentViewSet.as_view(
             {'get': 'list', 'post': 'create'})
 
@@ -62,20 +67,20 @@ class CommentViewSetTestCase(TestCase):
         url = reverse('comments-list')
         request = self.factory.get(url)
         response = self.viewset(request)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_comment_create(self):
         url = reverse('comments-list')
-        data = {'content': 'New Comment', 'post': self.blog.id}
-        request = self.factory.post(url, data)
-        force_authenticate(request, user=self.user)
-        response = self.viewset(request)
-        self.assertEqual(response.status_code, 201)
+        data = {'content': 'New Comment',
+                'post': self.blog.id, 'author': self.user.id}
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Comment.objects.count(), 1)
         self.assertEqual(Comment.objects.last().content, 'New Comment')
 
 
-class ViewCountViewSetTestCase(TestCase):
+class ViewCountViewSetTestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.category = Category.objects.create(name='Test Category')
@@ -84,7 +89,7 @@ class ViewCountViewSetTestCase(TestCase):
         self.viewset = ViewCountViewSet.as_view({'post': 'increment_viewers'})
 
 
-class PostLikeViewTestCase(TestCase):
+class PostLikeViewTestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.user = User.objects.create_user(
@@ -92,31 +97,39 @@ class PostLikeViewTestCase(TestCase):
         self.category = Category.objects.create(title='Test Category')
         self.blog = Blog.objects.create(
             title='Test Blog', content='Test Content', category=self.category, created_by_id=self.user.id, slug='test-blog')
-        self.url = reverse('post_like', kwargs={'pk': self.blog.id})
+        self.url = reverse('post_like', kwargs={'pk': self.blog.pk})
 
     def test_post_like(self):
         url = reverse('post_like', kwargs={'pk': self.blog.pk})
-        request = self.factory.get(url)
-        force_authenticate(request, user=self.user)
-        response = self.client.post(url)
+        data = {'pk': str(self.blog.pk)}
+        # request = self.factory.post(url)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, {'message': 'like created'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {'message': 'like created'})
+        self.blog.refresh_from_db()
+
         self.assertEqual(self.blog.likes_count, 1)
+
         self.assertEqual(self.blog.likes.first().created_by, self.user)
         self.assertEqual(Notification.objects.count(), 1)
         notification = Notification.objects.first()
-        self.assertEqual(notification.notification_type, 'post_like')
-        self.assertEqual(notification.post_id, self.blog.id)
-        self.assertEqual(notification.recipient, self.blog.created_by)
+        self.assertEqual(notification.type_of_notification, 'blog_like')
+        self.assertEqual(notification.blog, self.blog)
+        self.assertEqual(notification.created_for, self.blog.created_by)
 
     def test_post_like_already_liked(self):
         like = Like.objects.create(created_by=self.user)
+        self.client.force_authenticate(user=self.user)
         self.blog.likes.add(like)
+        print("post.likes_count " + str(self.blog.likes_count))
+        data = {'pk': str(self.blog.pk)}
 
-        request = self.factory.post(self.url)
-        force_authenticate(request, user=self.user)
-        response = post_like(request, pk=self.blog.id)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(Like.objects.count(), 1)
-        self.assertEqual(self.blog.likes_count, 1)
+        response = self.client.post(self.url, data)
+        print("post.likes_count " + str(self.blog.likes_count))
+        self.assertEqual(response.json(), {'message': 'post already liked'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.blog.refresh_from_db()
+        print("post.likes_count " + str(self.blog.likes_count))
+        self.assertEqual(self.blog.likes.count(), 1)
