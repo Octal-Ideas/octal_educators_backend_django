@@ -1,8 +1,8 @@
 import uuid
 from django.db import models
 from django.conf import settings
+from django.core.validators import MinLengthValidator
 
-from ckeditor_uploader.fields import RichTextUploadingField
 from cloudinary.models import CloudinaryField
 from rest_framework.exceptions import ValidationError
 # Create your models here.
@@ -91,7 +91,7 @@ class Lecture(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     video_url = models.URLField()
-    content = RichTextUploadingField()
+    content = models.TextField(validators=[MinLengthValidator(10)])
     # Define the relationship with Course model
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name='lecturers')
