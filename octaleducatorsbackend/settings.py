@@ -119,10 +119,6 @@ THIRD_PARTY_APPS = [
 #api docs 
     "drf_yasg",
     
-    # Adding a richtext editor
-    'ckeditor',
-    'ckeditor_uploader',
-
 #save images
     'cloudinary_storage',
     'cloudinary',
@@ -352,33 +348,7 @@ SITE_ID=1
 
 USE_JWT = True
 
-# CKEDITOR configurations
 
-CKEDITOR_UPLOAD_PATH = 'ckeditor/uploads/'
-# CKEDITOR_IMAGE_BACKEND = "pillow"
-
-
-CKEDITOR_CONFIGS = {
-    'default': {
-        'extraPlugins': ','.join([
-            'uploadimage',
-            'codesnippet',
-            'autolink',
-            'autoembed',
-            'embedsemantic',
-            'scayt',
-            'widget',
-            'lineutils',
-            'clipboard',
-            'dialog',
-            'dialogui',
-            'elementspath'
-        ]),
-        'toolbar': 'full',
-        'height': '700',
-    },
-
-}
 
 # email configurations
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

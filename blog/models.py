@@ -7,11 +7,11 @@ from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.shortcuts import reverse
 from django.utils import timezone
 from django.utils.text import slugify
-from django.shortcuts import reverse
+from django.core.validators import MinLengthValidator
 
-from ckeditor_uploader.fields import RichTextUploadingField
 from cloudinary.models import CloudinaryField
 from rest_framework.exceptions import ValidationError
 # Create your models here.
@@ -49,9 +49,10 @@ class Blog(models.Model):
     # Fields for the blog post model
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255, blank=False)
-    thumbnail = CloudinaryField('image', upload_preset='octalideas', null=True, blank=True)
+    thumbnail = CloudinaryField(
+        'image', upload_preset='octalideas', null=True, blank=True)
     description = models.CharField(max_length=500, null=True, blank=True)
-    content = RichTextUploadingField()
+    content = models.TextField(validators=[MinLengthValidator(10)])
     slug = models.SlugField(max_length=100, unique=True)
     modified_at = models.DateField(auto_now=True)
     created_by = models.ForeignKey(
@@ -64,7 +65,6 @@ class Blog(models.Model):
     caption = models.CharField(max_length=255, blank=True)
     likes = models.ManyToManyField(Like, blank=True)
     likes_count = models.IntegerField(default=0)
-
 
     def __str__(self):
         return self.title
