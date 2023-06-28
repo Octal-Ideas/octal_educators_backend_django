@@ -40,21 +40,19 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['http://localhost:8080','http://localhost:4000/',
-    'https://octaleducatorsbackenddjango-production.up.railway.app',
-    'https://octal-educators.vercel.app',
-    'https://octalideas.org']
+ALLOWED_HOSTS = ['http://localhost:8080', 'http://localhost:4000/',
+                 'https://octaleducatorsbackenddjango-production.up.railway.app',
+                 'https://octal-educators.vercel.app',
+                 'https://octalideas.org']
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
+    'http://localhost:8080', 'http://localhost:4000',
     'https://octaleducatorsbackenddjango-production.up.railway.app',
     'https://octal-educators.vercel.app',
     'https://octalideas.org'
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'https://octaleducatorsbackenddjango-production.up.railway.app/*',
-    'https://octal-educators.vercel.app/*',
-    'https://octalideas.org/*'
+    'http://localhost:4000/*', 'https://octaleducatorsbackenddjango-production.up.railway.app/*', 'https://octal-educators.vercel.app/*', 'https://octalideas.org/*'
 ]
 
 REST_FRAMEWORK = {
