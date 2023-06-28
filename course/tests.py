@@ -33,7 +33,6 @@ class TeacherModelTestCase(TestCase):
             date_of_birth='2000-01-01',
             address='Test Address',
             department=self.department,
-            total_time='10 hours',
             created_by=self.user
         )
 
@@ -53,7 +52,6 @@ class CourseModelTestCase(TestCase):
             date_of_birth='2000-01-01',
             address='Test Address',
             department=self.department,
-            total_time='10 hours',
             created_by=self.user
         )
         self.course = Course.objects.create(
@@ -83,7 +81,7 @@ class LectureModelTestCase(TestCase):
             date_of_birth='2000-01-01',
             address='Test Address',
             department=self.department,
-            total_time='10 hours',
+
             created_by=self.user
         )
         self.course = Course.objects.create(
@@ -101,6 +99,7 @@ class LectureModelTestCase(TestCase):
             description='Test Description',
             video_url='http://example.com',
             content='Test Content',
+
             course=self.course,
             created_by=self.user
         )
@@ -124,7 +123,7 @@ class CourseViewSetTestCase(APITestCase):
             date_of_birth='2000-01-01',
             address='Test Address',
             department=self.department,
-            total_time='10 hours',
+
             created_by=self.user
         )
         self.course = Course.objects.create(
@@ -144,6 +143,7 @@ class CourseViewSetTestCase(APITestCase):
             video_url='http://example.com',
             content='Test Content',
             course=self.course,
+
             created_by=self.user
         )
         self.viewset = CourseViewSet.as_view(

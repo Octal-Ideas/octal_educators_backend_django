@@ -12,7 +12,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields = ('id', 'address', 'department', 'total_time', 'user')
+        fields = ('id', 'address', 'department',  'user')
         read_only_fields = ('created_by', 'created_at', 'modified_at')
 
 
@@ -20,7 +20,7 @@ class LectureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lecture
         fields = ('id', 'title', 'description',
-                  'video_url', 'content', 'course')
+                  'video_url', 'content','total_time', 'course')
         read_only_fields = ('created_by', 'created_at', 'modified_at')
 
 
