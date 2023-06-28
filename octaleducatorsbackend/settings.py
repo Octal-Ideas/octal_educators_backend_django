@@ -44,7 +44,7 @@ ALLOWED_HOSTS = [
     'http://localhost:8080',
     'octaleducatorsbackenddjango-production.up.railway.app',
     'octal-educators.vercel.app',
-    'octalideas.org']
+    'octalideas.org', '127.0.0.1']
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080', 'http://localhost:4000',
@@ -175,24 +175,24 @@ WSGI_APPLICATION = 'octaleducatorsbackend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# if os.environ.get('ENV') == 'production':
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': 'containers-us-west-8.railway.app',
+        'PORT': '6013',
     }
 }
-
-if os.environ.get('ENV') == 'production':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'railway',
-            'USER': 'postgres',
-            'PASSWORD': config('DB_PASSWORD'),
-            'HOST': 'containers-us-west-178.railway.app',
-            'PORT': '7488',
-        }
-    }
 
 # if 'test' in sys.argv:
 #     DATABASES['default'] = {'ENGINE': 'django.db.backends.sqlite3'}

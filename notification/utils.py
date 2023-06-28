@@ -2,7 +2,6 @@ from blog.models import Blog
 from subscriber.models import Subscriber
 from .models import Notification
 
-from .models import Notification
 
 from blog.models import Blog
 from subscriber.models import Subscriber
