@@ -40,14 +40,21 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['http://localhost:8080','http://localhost:4000/',
+    'https://octaleducatorsbackenddjango-production.up.railway.app',
+    'https://octal-educators.vercel.app',
+    'https://octalideas.org']
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
-    'https://octaleducatorsbackenddjango-production.up.railway.app'
+    'https://octaleducatorsbackenddjango-production.up.railway.app',
+    'https://octal-educators.vercel.app',
+    'https://octalideas.org'
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'https://octaleducatorsbackenddjango-production.up.railway.app/*'
+    'https://octaleducatorsbackenddjango-production.up.railway.app/*',
+    'https://octal-educators.vercel.app/*',
+    'https://octalideas.org/*'
 ]
 
 REST_FRAMEWORK = {
@@ -105,21 +112,21 @@ PROJECT_APPS = [
 
 THIRD_PARTY_APPS = [
     'whitenoise.runserver_nostatic',
-    
+
     "rest_framework",
     "rest_framework_simplejwt",
-    "rest_framework_simplejwt.token_blacklist",   
+    "rest_framework_simplejwt.token_blacklist",
     'corsheaders',
     'djoser',
     'social_django',
-    
+
     'taggit',
     'phonenumber_field',
 
-#api docs 
+    # api docs
     "drf_yasg",
-    
-#save images
+
+    # save images
     'cloudinary_storage',
     'cloudinary',
 ]
@@ -136,8 +143,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-    'social_django.middleware.SocialAuthExceptionMiddleware', 
+
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'octaleducatorsbackend.urls'
@@ -153,8 +160,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                
-                'social_django.context_processors.backends',  
+
+                'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
             'libraries': {
@@ -298,9 +305,8 @@ SIMPLE_JWT = {
 }
 
 
-
 # DJOSER CONFIG
-DJOSER = { 
+DJOSER = {
     "LOGIN_FIELD": "email",
     "USER_CREATE_PASSWORD_RETYPE": True,
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
@@ -314,16 +320,15 @@ DJOSER = {
     "SEND_ACTIVATION_EMAIL": True,
     "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [
-        'http://127.0.0.1:8000', 'http://127.0.0.1:8000/','http://127.0.0.1:8000/signin','http://localhost:8000/'
+        'http://127.0.0.1:8000', 'http://127.0.0.1:8000/', 'http://127.0.0.1:8000/signin', 'http://localhost:8000/', 'https://octal-educators.vercel.app/', 'https://octal-educators.vercel.app/login', 'https://octal-educators.vercel.app/signup', 'https://octalideas.org/', 'https://octalideas.org/login', 'https://octalideas.org/signup'
     ],
     "SERIALIZERS": {
-        "user_create": "Accounts.serializers.UserSerializer",  
+        "user_create": "Accounts.serializers.UserSerializer",
         "user": "djoser.serializers.UserSerializer",
         "current_user": "djoser.serializers.UserSerializer",
         "user_delete": "djoser.serializers.UserSerializer",
     },
 }
-
 
 
 # django-social auth
@@ -336,18 +341,17 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY= config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
     'openid'
 ]
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
-SITE_ID=1
+SITE_ID = 1
 
 USE_JWT = True
-
 
 
 # email configurations

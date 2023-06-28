@@ -70,7 +70,6 @@ class LeadModelTestCase(TestCase):
             date_of_birth='2000-01-01',
             address='Test Address',
             department=self.department,
-            total_time='10 hours',
             created_by=self.user
         )
         self.course = Course.objects.create(
@@ -136,7 +135,6 @@ class LeadViewSetTestCase(APITestCase):
             date_of_birth='2000-01-01',
             address='Test Address',
             department=self.department,
-            total_time='10 hours',
             created_by=self.user
         )
         self.course = Course.objects.create(

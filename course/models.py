@@ -3,8 +3,9 @@ from django.db import models
 from django.conf import settings
 from django.core.validators import MinLengthValidator
 
+from django.utils import timezone
+
 from cloudinary.models import CloudinaryField
-from rest_framework.exceptions import ValidationError
 # Create your models here.
 
 # Define Department model with fields as per requirements
@@ -36,7 +37,6 @@ class Teacher(models.Model):
     date_of_birth = models.DateField()
     address = models.TextField()
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    total_time = models.CharField(max_length=50)
 
     modified_at = models.DateField(auto_now=True)
     created_by = models.ForeignKey(
@@ -92,6 +92,8 @@ class Lecture(models.Model):
     description = models.TextField()
     video_url = models.URLField()
     content = models.TextField(validators=[MinLengthValidator(10)])
+
+    total_time = models.DurationField(default=timezone.timedelta(hours=8))
     # Define the relationship with Course model
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name='lecturers')
