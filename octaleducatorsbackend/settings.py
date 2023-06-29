@@ -186,11 +186,11 @@ WSGI_APPLICATION = 'octaleducatorsbackend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': 'containers-us-west-8.railway.app',
-        'PORT': '6013',
+        'NAME': config('DATABASE_DB'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': config('DATABASE_PORT'),
     }
 }
 
