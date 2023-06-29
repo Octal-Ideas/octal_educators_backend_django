@@ -45,8 +45,8 @@ jobs:
           DEBUG: False
           SECRET_KEY: CI_CD_TEST_KEY
           ALLOWED_HOSTS: ALLOWED_HOSTS
-          DATABASE_USER: postgress
-          DATABASE_PASSWORD: postgress
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: postgres
           DATABASE_DB: djtesting
           DB_PASSWORD: postgres
           DATABASE_PORT: 5432
