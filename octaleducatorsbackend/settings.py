@@ -73,11 +73,11 @@ REST_FRAMEWORK = {
         'course.throttles.CourseRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/day',
-        'user': '500/day',
-        'accounts': '50/day',
-        'blog': '100/day',
-        'course': '100/day',
+        'anon': '1000/day',
+        'user': '1000/day',
+        'accounts': '500/day',
+        'blog': '1000/day',
+        'course': '1000/day',
 
     }
 }
