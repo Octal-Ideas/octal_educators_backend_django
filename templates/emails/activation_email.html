@@ -1,0 +1,50 @@
+# templates/emails/activation_email.html {% load i18n %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>{% trans "Activate Your Octal Educators Account" %}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #333333;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>{% trans "Activate Your Octal Educators Account" %}</h2>
+
+    <p>
+      {% trans "You're receiving this email because you need to finish the
+      activation process on Octal Educators." %}
+    </p>
+
+    <p>{% trans "Please click the button below to activate your account:" %}</p>
+
+    <p>
+      <a class="button" href="{{ activation_url }}"> {% trans "Activate" %} </a>
+    </p>
+
+    <p>
+      {% trans "If the button above doesn't work, copy and paste the following
+      URL into your web browser:" %}
+    </p>
+
+    <p>
+      <code>{{ activation_url }}</code>
+    </p>
+
+    <p>{% trans "Thanks for using our site!" %}</p>
+
+    <p>{% trans "The Octal Educators team" %}</p>
+  </body>
+</html>
