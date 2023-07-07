@@ -317,6 +317,7 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
     "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [
         'http://127.0.0.1:8000', 'http://127.0.0.1:8000/', 'http://localhost:8000/', 'http://localhost:4000/signup', 'http://localhost:4000/login', 'http://localhost:4000', 'http://localhost:4000/', 'https://octal-educators.vercel.app', 'https://octal-educators.vercel.app/', 'https://octal-educators.vercel.app/login', 'https://octal-educators.vercel.app/signup', 'https://octalideas.org', 'https://octalideas.org/', 'https://octalideas.org/login', 'https://octalideas.org/signup'
