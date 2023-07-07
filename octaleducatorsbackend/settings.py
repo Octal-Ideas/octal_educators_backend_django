@@ -329,7 +329,7 @@ DJOSER = {
         "user_delete": "djoser.serializers.UserSerializer",
     },
     'EMAIL': {
-        'activation': 'emails.activation_email',  # Path to your custom template
+        'activation': 'accounts.templates.emails.activation_email',  # Path to your custom template
     },
 }
 
