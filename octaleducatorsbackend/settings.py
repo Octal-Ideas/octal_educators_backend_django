@@ -329,7 +329,8 @@ DJOSER = {
         "user_delete": "djoser.serializers.UserSerializer",
     },
     'EMAIL': {
-        'activation': 'core.email.ActivationEmail',  # Path to your custom template
+        # Path to your custom template
+        'activation': 'octaleducatorsbackend.email.ActivationEmail',
     },
 }
 
