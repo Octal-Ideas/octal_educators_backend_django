@@ -151,7 +151,7 @@ ROOT_URLCONF = 'octaleducatorsbackend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'accounts/templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -329,7 +329,7 @@ DJOSER = {
         "user_delete": "djoser.serializers.UserSerializer",
     },
     'EMAIL': {
-        'activation': 'accounts.templates.emails.activation_email',  # Path to your custom template
+        'activation': 'emails.activation_email',  # Path to your custom template
     },
 }
 
