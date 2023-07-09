@@ -1,47 +1,40 @@
-{% load i18n %}
+{% load i18n %} {% block subject %} {% blocktrans %}Activate
+your Octal Educators account.{% endblocktrans %} {% endblock subject %} {% block
+html_body %}
+<body style="font-family: Arial, sans-serif; color: #333333">
+  <h2>{% trans "Activate Your Account" %}</h2>
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Activate Your Account</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        color: #333333;
-      }
-      .button {
+  <p>
+    {% trans "You're receiving this email because you need to activate your
+    account." %}
+  </p>
+
+  <p>{% trans "Please click the button below to activate your account:" %}</p>
+
+  <p>
+    <a
+      style="
         display: inline-block;
         padding: 10px 20px;
         background-color: #007bff;
         color: #ffffff;
         text-decoration: none;
         border-radius: 5px;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>Activate Your Account</h2>
+      "
+      href="{{ activation_url }}"
+      >{{ activation_url }}</a
+    >
+  </p>
 
-    <p>
-      "You're receiving this email because you need to activate your account.
-    </p>
+  <p>
+    {% trans "If the button above doesn't work, you can also copy and paste the
+    following URL into your web browser:" %}
+  </p>
 
-    <p>Please click the button below to activate your account:</p>
+  <p><code>{{ activation_url }}</code></p>
 
-    <p>
-      <a class="button" href="{{ activation_url }}">{{ activation_url }}</a>
-    </p>
+  <p>{% trans "Thank you for using our service!" %}</p>
 
-    <p>
-      If the button above doesn't work, you can also copy and paste the
-      following URL into your web browser:"
-    </p>
-
-    <p><code>{{ activation_url }}</code></p>
-
-    <p>Thank you for using our service!</p>
-
-    <p>The Octal Educators team</p>
-  </body>
-</html>
+  <p>{% trans "The Octal Educators team" %}</p>
+</body>
+{% endblock html_body %}
