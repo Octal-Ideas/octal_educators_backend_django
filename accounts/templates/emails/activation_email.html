@@ -1,48 +1,28 @@
 {% load i18n %}
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>{% trans "Activate Your Account" %}</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        color: #333333;
-      }
-      .button {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #ffffff;
-        text-decoration: none;
-        border-radius: 5px;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>{% trans "Activate Your Account" %}</h2>
+{% block subject %}
+{% blocktrans %}Account activation on {{ site_name }}{% endblocktrans %}
+{% endblock subject %}
 
-    <p>
-      {% trans "You're receiving this email because you need to activate your
-      account." %}
-    </p>
+{% block text_body %}
+{% blocktrans %}You're receiving this email because you need to finish activation process on {{ site_name }}.{% endblocktrans %}
 
-    <p>{% trans "Please click the button below to activate your account:" %}</p>
+{% trans "Please go to the following page to activate account:" %}
+{{ protocol }}://{{ domain }}/{{ url|safe }}
 
-    <p>
-      <a class="button" href="{{ activation_url }}">{{ activation_url }}</a>
-    </p>
+{% trans "Thanks for using our site!" %}
 
-    <p>
-      {% trans "If the button above doesn't work, you can also copy and paste
-      the following URL into your web browser:" %}
-    </p>
+{% blocktrans %}The {{ site_name }} team{% endblocktrans %}
+{% endblock text_body %}
 
-    <p><code>{{ activation_url }}</code></p>
+{% block html_body %}
+<p>{% blocktrans %}You're receiving this email because you need to finish activation process on {{ site_name }}.{% endblocktrans %}</p>
 
-    <p>{% trans "Thank you for using our service!" %}</p>
+<p>{% trans "Please go to the following page to activate account:" %}</p>
+<p><a href="{{ protocol }}://{{ domain }}/{{ url|safe }}">{{ protocol }}://{{ domain }}/{{ url|safe }}</a></p>
 
-    <p>{% trans "The Octal Educators team" %}</p>
-  </body>
-</html>
+<p>{% trans "Thanks for using our site!" %}</p>
+
+<p>{% blocktrans %}The {{ site_name }} team{% endblocktrans %}</p>
+
+{% endblock html_body %}

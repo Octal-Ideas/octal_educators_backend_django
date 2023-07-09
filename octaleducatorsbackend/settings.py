@@ -330,7 +330,7 @@ DJOSER = {
     },
     'EMAIL': {
         # Path to your custom template
-        'activation': 'octaleducatorsbackend.email.SignUpActivationEmail',
+        'activation': 'octaleducatorsbackend.email.ActivationEmail',
     },
 }
 
