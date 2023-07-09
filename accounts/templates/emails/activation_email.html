@@ -4,7 +4,7 @@
 {% blocktrans %}Account activation on {{ site_name }}{% endblocktrans %}
 {% endblock subject %}
 
-{% block text_body %}
+{% comment %} {% block text_body %}
 {% blocktrans %}You're receiving this email because you need to finish activation process on {{ site_name }}.{% endblocktrans %}
 
 {% trans "Please go to the following page to activate account:" %}
@@ -13,10 +13,17 @@
 {% trans "Thanks for using our site!" %}
 
 {% blocktrans %}The {{ site_name }} team{% endblocktrans %}
-{% endblock text_body %}
+{% endblock text_body %} {% endcomment %}
 
 {% block html_body %}
-<p>{% blocktrans %}You're receiving this email because you need to finish activation process on {{ site_name }}.{% endblocktrans %}</p>
+
+<div style="background-color: #a8cbd1;"><img
+  src="https://res.cloudinary.com/dny99bibe/image/upload/v1688917906/octalideas/zank4jgwhho40eljhp7c.png"
+  alt="Octal Logo"
+  style="display: block; margin: 20px auto; max-width: 150px; height: auto"
+/></div>
+
+<p>{% blocktrans %}You're receiving this email because you need to finish the process on {{ site_name }}.{% endblocktrans %}</p>
 
 <p>{% trans "Please go to the following page to activate account:" %}</p>
 <p><a href="{{ protocol }}://{{ domain }}/{{ url|safe }}">{{ protocol }}://{{ domain }}/{{ url|safe }}</a></p>
