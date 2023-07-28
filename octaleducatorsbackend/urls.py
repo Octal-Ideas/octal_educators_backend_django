@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include,  re_path
 from django.conf import settings
 from django.conf.urls.static import static
-
+from payment.views import Makepayment
 
 
 # DRF YASG
@@ -63,8 +63,10 @@ urlpatterns = [
     path('api/v1/', include('search.urls')),
     path('api/v1/', include('lead.urls')),
     path('api/v1/', include('notification.urls')),
-     path('api/v1/', include('subscriber.urls')),
+    path('api/v1/', include('subscriber.urls')),
 
+    path('api/v1/lnm_stkpush/', Makepayment.as_view()),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = "Octal Ideas Admin"

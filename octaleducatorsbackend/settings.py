@@ -106,6 +106,7 @@ PROJECT_APPS = [
     'lead.apps.LeadConfig',
     'subscriber.apps.SubscriberConfig',
     'notification.apps.NotificationConfig',
+    'payment',
 
 ]
 
@@ -382,3 +383,15 @@ CELERY_APP = 'octaleducatorsbackend.celery:app'
 CELERY_IMPORTS = (
     'task_manager.tasks',
 )
+
+# mpesa settings
+CALL_BACK_URL=config('CALL_BACK_URL')
+BUSINESS_SHORT_CODE = "174379"
+TRANSACTION_TYPE = "CustomerPayBillOnline" 
+TRANSACTION_DESCRIPTION = "Payment of X"  
+ACCOUNT_REFERENCE = "CompanyXLTD"
+API_RESOURCE_URL ="https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+ACCESS_TOKEN_URL="https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+LIPANAMPESA_PASSKEY=config('LIPANAMPESA_PASSKEY')
+CONSUMER_KEY=config('CONSUMER_KEY')
+CONSUMER_SECRET=config('CONSUMER_SECRET')
